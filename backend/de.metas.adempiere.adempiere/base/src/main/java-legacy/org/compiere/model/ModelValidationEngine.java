@@ -84,22 +84,26 @@ import java.util.Properties;
  * Model Validation Engine
  *
  * @author Jorg Janke
- * @version $Id: ModelValidationEngine.java,v 1.2 2006/07/30 00:58:38 jjanke Exp $
+ * @version $Id: ModelValidationEngine.java,v 1.2 2006/07/30 00:58:38 jjanke Exp
+ *          $
  *
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  *         <ul>
  *         <li>FR [ 1670025 ] ModelValidator.afterLoadPreferences will be useful
  *         <li>BF [ 1679692 ] fireDocValidate doesn't treat exceptions as errors
  *         <li>FR [ 1724662 ] Support Email should contain model validators info
- *         <li>FR [ 2788276 ] Data Import Validator <a href="https://sourceforge.net/tracker/?func=detail&aid=2788276&group_id=176962&atid=879335">https://sourceforge.net/tracker/?func=detail&aid=2788276&group_id=176962&atid=879335</a>
- *         <li>BF [ 2804135 ] Global FactsValidator are not invoked https://sourceforge.net/tracker/?func=detail&aid=2804135&group_id=176962&atid=879332
- *         <li>BF [ 2819617 ] NPE if script validator rule returns null https://sourceforge.net/tracker/?func=detail&aid=2819617&group_id=176962&atid=879332
+ *         <li>FR [ 2788276 ] Data Import Validator <a href=
+ *         "https://sourceforge.net/tracker/?func=detail&aid=2788276&group_id=176962&atid=879335">https://sourceforge.net/tracker/?func=detail&aid=2788276&group_id=176962&atid=879335</a>
+ *         <li>BF [ 2804135 ] Global FactsValidator are not invoked
+ *         https://sourceforge.net/tracker/?func=detail&aid=2804135&group_id=176962&atid=879332
+ *         <li>BF [ 2819617 ] NPE if script validator rule returns null
+ *         https://sourceforge.net/tracker/?func=detail&aid=2819617&group_id=176962&atid=879332
  *         </ul>
  * @author Tobias Schoeneberg, t.schoeneberg@metas.de
- *         <li>FR [ADEMPIERE-28] ModelValidatorException <a href="https://adempiere.atlassian.net/browse/ADEMPIERE-28">https://adempiere.atlassian.net/browse/ADEMPIERE-28</a>
+ *         <li>FR [ADEMPIERE-28] ModelValidatorException <a href=
+ *         "https://adempiere.atlassian.net/browse/ADEMPIERE-28">https://adempiere.atlassian.net/browse/ADEMPIERE-28</a>
  */
-public class ModelValidationEngine implements IModelValidationEngine
-{
+public class ModelValidationEngine implements IModelValidationEngine {
 
 	private static final String PERF_MON_SYSCONFIG_NAME = "de.metas.monitoring.modelInterceptor.enable";
 	private static final boolean SYS_CONFIG_DEFAULT_VALUE = false;
@@ -109,16 +113,14 @@ public class ModelValidationEngine implements IModelValidationEngine
 	/**
 	 * Get Singleton
 	 */
-	public synchronized static ModelValidationEngine get()
-	{
-		if (s_engine == null)
-		{
+	public synchronized static ModelValidationEngine get() {
+		if (s_engine == null) {
 			// NOTE: we need to instantiate and assign it to static variable immediatelly
-			// else, in init() method, this get() is called indirectly which leads us to have 2 ModelValidationEngine instances
+			// else, in init() method, this get() is called indirectly which leads us to
+			// have 2 ModelValidationEngine instances
 			s_engine = new ModelValidationEngine();
 		}
-		if (State.TO_BE_INITALIZED.equals(state))
-		{
+		if (State.TO_BE_INITALIZED.equals(state)) {
 			logger.info("Start initializing ModelValidationEngine");
 
 			state = State.INITIALIZING;
@@ -129,11 +131,12 @@ public class ModelValidationEngine implements IModelValidationEngine
 
 			state = State.INITIALIZED;
 
-			logger.info("Done initializing ModelValidationEngine; it took {}; m_globalValidators.size={}; m_validators.size={}",
+			logger.info(
+					"Done initializing ModelValidationEngine; it took {}; m_globalValidators.size={}; m_validators.size={}",
 					stopwatch, s_engine.m_globalValidators.size(), s_engine.m_validators.size());
 		}
 		return s_engine;
-	}	// get
+	} // get
 
 	/**
 	 * Engine Singleton. Never use it directly, but use {@link #get()} instead.
@@ -141,19 +144,22 @@ public class ModelValidationEngine implements IModelValidationEngine
 	private static ModelValidationEngine s_engine = null;
 
 	/**
-	 * Sets the list of EntityTypes for which the model interceptors shall be loaded.
+	 * Sets the list of EntityTypes for which the model interceptors shall be
+	 * loaded.
 	 * <p>
-	 * You can provide a custom list of entity types, or you can use a predefined one:
+	 * You can provide a custom list of entity types, or you can use a predefined
+	 * one:
 	 * <ul>
-	 * <li>{@link #INITENTITYTYPE_Minimal} - only the core entity types. It is used when we need to start adempiere from other tools and we don't want to start the servers, processors and stuff.
+	 * <li>{@link #INITENTITYTYPE_Minimal} - only the core entity types. It is used
+	 * when we need to start adempiere from other tools and we don't want to start
+	 * the servers, processors and stuff.
 	 * </ul>
 	 */
-	public synchronized static void setInitEntityTypes(final List<String> initEntityTypes)
-	{
+	public synchronized static void setInitEntityTypes(final List<String> initEntityTypes) {
 		Check.assumeNotNull(initEntityTypes, "initEntityTypes not null");
-		if (s_engine != null)
-		{
-			final AdempiereException ex = new AdempiereException("Setting InitEntityTypes after the model validation engine was initialized has no effect.");
+		if (s_engine != null) {
+			final AdempiereException ex = new AdempiereException(
+					"Setting InitEntityTypes after the model validation engine was initialized has no effect.");
 			logger.warn(ex.getLocalizedMessage(), ex);
 		}
 
@@ -161,9 +167,11 @@ public class ModelValidationEngine implements IModelValidationEngine
 		logger.info("IMPORTANT: Only following ADempiere modules will be activated: " + _initEntityTypes);
 	}
 
-	/** @return entity types which shall be initialized or <code>null</code> if ALL of them shall be initialized */
-	private synchronized static List<String> getInitEntityTypes()
-	{
+	/**
+	 * @return entity types which shall be initialized or <code>null</code> if ALL
+	 *         of them shall be initialized
+	 */
+	private synchronized static List<String> getInitEntityTypes() {
 		return _initEntityTypes;
 	}
 
@@ -176,39 +184,41 @@ public class ModelValidationEngine implements IModelValidationEngine
 	);
 
 	private static Boolean _failOnMissingModelInteceptors = null;
-	/** List of errors that we encounted while initializing the model interceptors */
+	/**
+	 * List of errors that we encounted while initializing the model interceptors
+	 */
 	private static final List<ModelInterceptorInitException> _modelInterceptorInitErrors = new ArrayList<>();
 
 	/**************************************************************************
 	 * Constructor. Creates Model Validators
 	 */
-	private ModelValidationEngine()
-	{
-		// metas: tsa: begin: break this in 2 parts because if the get() method is called during initialization we will end with multiple instances of ModelVaidationEngine
+	private ModelValidationEngine() {
+		// metas: tsa: begin: break this in 2 parts because if the get() method is
+		// called during initialization we will end with multiple instances of
+		// ModelVaidationEngine
 	}
 
-	private void init()
-	{
+	private void init() {
 		// metas: tsa: end
 
 		final List<String> initEntityTypes = getInitEntityTypes(); // metas: 03023
 
 		String currentClassName = null; // className of current model interceptor which is about to be initialized
-		try
-		{
+		try {
 			final Stopwatch stopwatch = Stopwatch.createStarted();
 
-			final ModuleActivatorDescriptorsRepository moduleActivatorDescriptorsRepo = SpringContextHolder.instance.getBean(ModuleActivatorDescriptorsRepository.class);
-			final ModuleActivatorDescriptorsCollection moduleActivatorDescriptors = moduleActivatorDescriptorsRepo.getDescriptors();
+			final ModuleActivatorDescriptorsRepository moduleActivatorDescriptorsRepo = SpringContextHolder.instance
+					.getBean(ModuleActivatorDescriptorsRepository.class);
+			final ModuleActivatorDescriptorsCollection moduleActivatorDescriptors = moduleActivatorDescriptorsRepo
+					.getDescriptors();
 
 			final Collection<Object> springInterceptors = getSpringInterceptors();
-			final ImmutableListMultimap<Object, Object> springInterceptorsByClassname = Multimaps.index(springInterceptors, springInterceptor -> springInterceptor.getClass().getName());
+			final ImmutableListMultimap<Object, Object> springInterceptorsByClassname = Multimaps
+					.index(springInterceptors, springInterceptor -> springInterceptor.getClass().getName());
 
 			// Register model interceptors defined in database
-			for (final ModuleActivatorDescriptor moduleActivatorDescriptor : moduleActivatorDescriptors)
-			{
-				if (!moduleActivatorDescriptor.isActive())
-				{
+			for (final ModuleActivatorDescriptor moduleActivatorDescriptor : moduleActivatorDescriptors) {
+				if (!moduleActivatorDescriptor.isActive()) {
 					logger.info("Skip {} (not active)", moduleActivatorDescriptor);
 					continue;
 				}
@@ -216,36 +226,34 @@ public class ModelValidationEngine implements IModelValidationEngine
 				//
 				// Skip loading the model interceptor if entity type is not active
 				final String entityType = moduleActivatorDescriptor.getEntityType();
-				if (!EntityTypesCache.instance.isActive(entityType))
-				{
+				if (!EntityTypesCache.instance.isActive(entityType)) {
 					logger.info("Skip {} (entityType is not active)", moduleActivatorDescriptor);
 					continue;
 				}
 
 				//
-				// Skip model validator if entity type is not in list of allowed entity types (task 03023)
-				if (initEntityTypes != null && !initEntityTypes.contains(entityType))
-				{
-					logger.info("Skip {} (entityType not in initEntityTypes=" + initEntityTypes + ")", moduleActivatorDescriptor);
+				// Skip model validator if entity type is not in list of allowed entity types
+				// (task 03023)
+				if (initEntityTypes != null && !initEntityTypes.contains(entityType)) {
+					logger.info("Skip {} (entityType not in initEntityTypes=" + initEntityTypes + ")",
+							moduleActivatorDescriptor);
 					continue;
 				}
 
 				final String moduleActivatorClassname = moduleActivatorDescriptor.getClassname();
 				currentClassName = moduleActivatorClassname;
 
-				final ImmutableList<Object> existingSpringInstances = springInterceptorsByClassname.get(moduleActivatorClassname);
+				final ImmutableList<Object> existingSpringInstances = springInterceptorsByClassname
+						.get(moduleActivatorClassname);
 				final Object existingSpringInstance;
-				if (existingSpringInstances.isEmpty())
-				{
+				if (existingSpringInstances.isEmpty()) {
 					existingSpringInstance = null;
-				}
-				else if (existingSpringInstances.size() == 1)
-				{
+				} else if (existingSpringInstances.size() == 1) {
 					existingSpringInstance = existingSpringInstances.get(0);
-				}
-				else
-				{
-					logger.warn("More than one spring interceptors found for module activator class '{}'. Ignoring then and will try to create a new instance. -- {}", moduleActivatorClassname, existingSpringInstances);
+				} else {
+					logger.warn(
+							"More than one spring interceptors found for module activator class '{}'. Ignoring then and will try to create a new instance. -- {}",
+							moduleActivatorClassname, existingSpringInstances);
 					existingSpringInstance = null;
 				}
 
@@ -259,11 +267,9 @@ public class ModelValidationEngine implements IModelValidationEngine
 			//
 			// Register from Spring context
 			stopwatch.reset().start();
-			for (final Object springInterceptor : springInterceptors)
-			{
+			for (final Object springInterceptor : springInterceptors) {
 				currentClassName = springInterceptor.getClass().getName();
-				if (moduleActivatorDescriptors.containsClassname(currentClassName))
-				{
+				if (moduleActivatorDescriptors.containsClassname(currentClassName)) {
 					logger.debug("Skip {} because was already considered", springInterceptor);
 					continue;
 				}
@@ -273,57 +279,50 @@ public class ModelValidationEngine implements IModelValidationEngine
 			currentClassName = null;
 
 			logger.debug("Done initializing spring based interceptors; it took {}", stopwatch);
-		}
-		catch (final Exception ex)
-		{
+		} catch (final Exception ex) {
 			addModelInterceptorInitError(currentClassName, ex);
 		}
 
-		if (!Ini.isSwingClient() && hasInitErrors())
-		{
+		if (!Ini.isSwingClient() && hasInitErrors()) {
 			logModelInterceptorInitErrors();
-			if (isFailOnMissingModelInteceptors())
-			{
+			if (isFailOnMissingModelInteceptors()) {
 				System.exit(1);
 			}
 		}
-	}	// ModelValidatorEngine
+	} // ModelValidatorEngine
 
-	private static Collection<Object> getSpringInterceptors()
-	{
+	private static Collection<Object> getSpringInterceptors() {
 		final ApplicationContext context = SpringContextHolder.instance.getApplicationContext();
-		if (context == null)
-		{
-			// NOTE: atm it returns null only when started from our tools (like the "model generator")
-			// but it's not preventing the tool execution because this is the last thing we do here and also because usually it's configured to not fail on init error.
+		if (context == null) {
+			// NOTE: atm it returns null only when started from our tools (like the "model
+			// generator")
+			// but it's not preventing the tool execution because this is the last thing we
+			// do here and also because usually it's configured to not fail on init error.
 			throw new AdempiereException("Cannot fetch Spring interceptors because spring context is not available");
 		}
 
 		final LinkedHashMap<String, Object> interceptorsByName = new LinkedHashMap<>();
-		interceptorsByName.putAll(context.getBeansWithAnnotation(org.adempiere.ad.modelvalidator.annotations.Interceptor.class));
+		interceptorsByName
+				.putAll(context.getBeansWithAnnotation(org.adempiere.ad.modelvalidator.annotations.Interceptor.class));
 		interceptorsByName.putAll(context.getBeansOfType(IModelInterceptor.class));
 
 		return interceptorsByName.values();
 	}
 
-	private void addModelInterceptorInitError(final String modelInterceptorClassName, final Throwable error)
-	{
-		final ModelInterceptorInitException initException = new ModelInterceptorInitException(modelInterceptorClassName, error);
+	private void addModelInterceptorInitError(final String modelInterceptorClassName, final Throwable error) {
+		final ModelInterceptorInitException initException = new ModelInterceptorInitException(modelInterceptorClassName,
+				error);
 		_modelInterceptorInitErrors.add(initException);
 	}
 
-	private boolean hasInitErrors()
-	{
+	private boolean hasInitErrors() {
 		return !_modelInterceptorInitErrors.isEmpty();
 	}
 
-	private String getInitErrorsAsString()
-	{
+	private String getInitErrorsAsString() {
 		final StringBuilder msg = new StringBuilder();
-		for (final ModelInterceptorInitException initError : _modelInterceptorInitErrors)
-		{
-			if (!msg.isEmpty())
-			{
+		for (final ModelInterceptorInitException initError : _modelInterceptorInitErrors) {
+			if (!msg.isEmpty()) {
 				msg.append("\n");
 			}
 			msg.append(initError.getLocalizedMessage());
@@ -331,30 +330,28 @@ public class ModelValidationEngine implements IModelValidationEngine
 		return msg.toString();
 	}
 
-	private void logModelInterceptorInitErrors()
-	{
-		if (_modelInterceptorInitErrors.isEmpty())
-		{
+	private void logModelInterceptorInitErrors() {
+		if (_modelInterceptorInitErrors.isEmpty()) {
 			return;
 		}
 
 		final boolean isFail = isFailOnMissingModelInteceptors();
-		System.err.println("\n\n=====================================================================================================================");
-		System.err.println("Got following erros on model interceptors initialization and AD_System.IsFailOnMissingModelValidator=" + isFail + ":");
+		System.err.println(
+				"\n\n=====================================================================================================================");
+		System.err.println(
+				"Got following erros on model interceptors initialization and AD_System.IsFailOnMissingModelValidator="
+						+ isFail + ":");
 		int errorNo = 0;
-		for (final ModelInterceptorInitException initError : _modelInterceptorInitErrors)
-		{
+		for (final ModelInterceptorInitException initError : _modelInterceptorInitErrors) {
 			errorNo++;
 			System.err.print(errorNo + ". ");
 			initError.printStackTrace(System.err);
 		}
 	}
 
-	private boolean isFailOnMissingModelInteceptors()
-	{
+	private boolean isFailOnMissingModelInteceptors() {
 		final Boolean failOnMissingModelInteceptorsOverride = _failOnMissingModelInteceptors;
-		if (failOnMissingModelInteceptorsOverride != null)
-		{
+		if (failOnMissingModelInteceptorsOverride != null) {
 			return failOnMissingModelInteceptorsOverride;
 		}
 
@@ -362,24 +359,18 @@ public class ModelValidationEngine implements IModelValidationEngine
 		return system.isFailOnMissingModelValidator();
 	}
 
-	public static void setFailOnMissingModelInteceptors(final boolean failOnMissingModelInteceptors)
-	{
+	public static void setFailOnMissingModelInteceptors(final boolean failOnMissingModelInteceptors) {
 		_failOnMissingModelInteceptors = failOnMissingModelInteceptors;
 	}
 
-	private void loadModuleActivatorClass(@NonNull final String className, @Nullable final Object existingInstance)
-	{
+	private void loadModuleActivatorClass(@NonNull final String className, @Nullable final Object existingInstance) {
 		final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		try
-		{
+		try {
 			// Load main activator
 			final Object moduleActivator;
-			if (existingInstance != null)
-			{
+			if (existingInstance != null) {
 				moduleActivator = existingInstance;
-			}
-			else
-			{
+			} else {
 				final Class<?> clazz = classLoader.loadClass(className);
 				moduleActivator = clazz.newInstance();
 			}
@@ -388,18 +379,14 @@ public class ModelValidationEngine implements IModelValidationEngine
 			//
 			// Load swing module activation (if any)
 			final RunMode runMode = Ini.getRunMode();
-			if (runMode == RunMode.SWING_CLIENT)
-			{
+			if (runMode == RunMode.SWING_CLIENT) {
 				final Class<?> swingModuleActivatorClass = getModuleActivatorClassOrNull(className + "_SwingUI");
-				if (swingModuleActivatorClass != null)
-				{
+				if (swingModuleActivatorClass != null) {
 					final Object moduleActivatorSwing = swingModuleActivatorClass.newInstance();
 					addModelValidator(moduleActivatorSwing);
 				}
 			}
-		}
-		catch (final Throwable ex)
-		{
+		} catch (final Throwable ex) {
 			addModelInterceptorInitError(className, ex);
 		}
 
@@ -408,20 +395,17 @@ public class ModelValidationEngine implements IModelValidationEngine
 	/**
 	 * Loads module activator class for given name.
 	 * <p>
-	 * If the class was not found this method will return null and the exception will be silently swallowed.
+	 * If the class was not found this method will return null and the exception
+	 * will be silently swallowed.
 	 *
 	 * @return module activator class or null if class was not found.
 	 */
 	@Nullable
-	private static Class<?> getModuleActivatorClassOrNull(final String classname)
-	{
-		try
-		{
+	private static Class<?> getModuleActivatorClassOrNull(final String classname) {
+		try {
 			final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			return classLoader.loadClass(classname);
-		}
-		catch (final ClassNotFoundException e)
-		{
+		} catch (final ClassNotFoundException e) {
 			// silently ignore it
 		}
 
@@ -431,7 +415,8 @@ public class ModelValidationEngine implements IModelValidationEngine
 	/** Logger */
 	private static final Logger logger = LogManager.getLogger(ModelValidationEngine.class);
 	// /** Change Support */
-	// private VetoableChangeSupport m_changeSupport = new VetoableChangeSupport(this);
+	// private VetoableChangeSupport m_changeSupport = new
+	// VetoableChangeSupport(this);
 
 	/** Validators */
 	private final ArrayList<ModelValidator> m_validators = new ArrayList<>();
@@ -445,18 +430,19 @@ public class ModelValidationEngine implements IModelValidationEngine
 	private final ArrayList<ModelValidator> m_globalValidators = new ArrayList<>();
 
 	/**
-	 * Contains model validators for subsequent processing. The boolean value tells if the subsequent processing takes place directly when fireModelChange() is invoked with this type (
+	 * Contains model validators for subsequent processing. The boolean value tells
+	 * if the subsequent processing takes place directly when fireModelChange() is
+	 * invoked with this type (
 	 * <code>true</code>) or later on (<code>false</code>).
 	 */
-	private final Map<ModelValidator, Boolean> m_modelChangeSubsequent = Collections.synchronizedMap(new HashMap<ModelValidator, Boolean>());
+	private final Map<ModelValidator, Boolean> m_modelChangeSubsequent = Collections
+			.synchronizedMap(new HashMap<ModelValidator, Boolean>());
 
 	/**
 	 * Initialize and add validator
 	 */
-	private void initialize(final ModelValidator validator, @Nullable final I_AD_Client client)
-	{
-		if (client == null)
-		{
+	private void initialize(final ModelValidator validator, @Nullable final I_AD_Client client) {
+		if (client == null) {
 			registerGlobal(validator);
 		}
 		m_validators.add(validator);
@@ -469,21 +455,18 @@ public class ModelValidationEngine implements IModelValidationEngine
 	 * Called when login is complete
 	 *
 	 * @param AD_Client_ID client
-	 * @param AD_Org_ID org
-	 * @param AD_Role_ID role
-	 * @param AD_User_ID user
+	 * @param AD_Org_ID    org
+	 * @param AD_Role_ID   role
+	 * @param AD_User_ID   user
 	 * @return error message or empty/null
 	 */
 	@Nullable
-	public String loginComplete(final int AD_Client_ID, final int AD_Org_ID, final int AD_Role_ID, final int AD_User_ID)
-	{
-		for (final ModelValidator validator : m_validators)
-		{
-			if (appliesFor(validator, AD_Client_ID))
-			{
+	public String loginComplete(final int AD_Client_ID, final int AD_Org_ID, final int AD_Role_ID,
+			final int AD_User_ID) {
+		for (final ModelValidator validator : m_validators) {
+			if (appliesFor(validator, AD_Client_ID)) {
 				final String error = validator.login(AD_Org_ID, AD_Role_ID, AD_User_ID);
-				if (Check.isNotBlank(error))
-				{
+				if (Check.isNotBlank(error)) {
 					return error;
 				}
 			}
@@ -491,13 +474,11 @@ public class ModelValidationEngine implements IModelValidationEngine
 
 		// now process the script model validator login
 		final Properties ctx = Env.getCtx();
-		final List<I_AD_Rule> loginRules = Services.get(IADRuleDAO.class).retrieveByEventType(ctx, X_AD_Rule.EVENTTYPE_ModelValidatorLoginEvent);
-		if (loginRules != null && !loginRules.isEmpty())
-		{
-			for (final I_AD_Rule loginRule : loginRules)
-			{
-				try
-				{
+		final List<I_AD_Rule> loginRules = Services.get(IADRuleDAO.class).retrieveByEventType(ctx,
+				X_AD_Rule.EVENTTYPE_ModelValidatorLoginEvent);
+		if (loginRules != null && !loginRules.isEmpty()) {
+			for (final I_AD_Rule loginRule : loginRules) {
+				try {
 					ScriptEngineFactory.get()
 							.createExecutor(loginRule)
 							.putContext(ctx, Env.WINDOW_None) // no window
@@ -507,9 +488,7 @@ public class ModelValidationEngine implements IModelValidationEngine
 							.putArgument("AD_User_ID", AD_User_ID)
 							.setThrowExceptionIfResultNotEmpty()
 							.execute(loginRule.getScript());
-				}
-				catch (final Exception e)
-				{
+				} catch (final Exception e) {
 					logger.warn("Failed executing login script for {}", loginRule, e);
 					return AdempiereException.extractMessage(e);
 				}
@@ -517,80 +496,62 @@ public class ModelValidationEngine implements IModelValidationEngine
 		}
 		//
 
-		// metas: 02504: begin: on login complete, log missingModelValidationMessage errors, but only in client mode.
+		// metas: 02504: begin: on login complete, log missingModelValidationMessage
+		// errors, but only in client mode.
 		// In server mode, those errors were already logged in init() method
 		final boolean hasInitErrors = hasInitErrors();
-		if (hasInitErrors && Ini.isSwingClient())
-		{
+		if (hasInitErrors && Ini.isSwingClient()) {
 			logModelInterceptorInitErrors();
 		}
 		// metas: 02504: end
 
-		if (AD_User_ID == 0 && AD_Role_ID == 0)
-		{
+		if (AD_User_ID == 0 && AD_Role_ID == 0) {
 			// don't validate for user system on role system
-		}
-		else if (hasInitErrors)
-		{
-			if (isFailOnMissingModelInteceptors())
-			{
+		} else if (hasInitErrors) {
+			if (isFailOnMissingModelInteceptors()) {
 				return "Errors on model interceptor initialization:\n" + getInitErrorsAsString();
 			}
 		}
 		return null;
-	}	// loginComplete
+	} // loginComplete
 
-	private List<IUserLoginListener> getUserLoginListener(final int adClientId)
-	{
+	private List<IUserLoginListener> getUserLoginListener(final int adClientId) {
 		final List<IUserLoginListener> listeners = new ArrayList<>();
-		for (final ModelValidator m_validator : m_validators)
-		{
+		for (final ModelValidator m_validator : m_validators) {
 
-			if (!(m_validator instanceof IUserLoginListener))
-			{
+			if (!(m_validator instanceof IUserLoginListener)) {
 				continue;
 			}
 
-			if (!appliesFor(m_validator, adClientId))
-			{
+			if (!appliesFor(m_validator, adClientId)) {
 				continue;
 			}
 
-			final IUserLoginListener loginListener = (IUserLoginListener)m_validator;
+			final IUserLoginListener loginListener = (IUserLoginListener) m_validator;
 			listeners.add(loginListener);
 		}
 		return listeners;
 	}
 
-	public void fireBeforeLogout(final MFSession session)
-	{
+	public void fireBeforeLogout(final MFSession session) {
 		final int adClientId = session.getAD_Client_ID();
 		final List<IUserLoginListener> listeners = getUserLoginListener(adClientId);
-		for (final IUserLoginListener listener : listeners)
-		{
-			try
-			{
+		for (final IUserLoginListener listener : listeners) {
+			try {
 				listener.beforeLogout(session);
-			}
-			catch (final Exception e)
-			{
+			} catch (final Exception e) {
 				logger.error(e.getLocalizedMessage(), e);
 			}
 		}
 	}
 
-	public void fireAfterLogout(final MFSession session)
-	{
+	public void fireAfterLogout(final MFSession session) {
 		final int adClientId = session.getAD_Client_ID();
 		final List<IUserLoginListener> listeners = getUserLoginListener(adClientId);
-		for (final IUserLoginListener listener : listeners)
-		{
-			try
-			{
+		for (final IUserLoginListener listener : listeners) {
+			try {
 				listener.afterLogout(session);
-			}
-			catch (final Exception e)
-			{
+			} catch (final Exception e) {
 				logger.error(e.getLocalizedMessage(), e);
 			}
 		}
@@ -600,46 +561,35 @@ public class ModelValidationEngine implements IModelValidationEngine
 	 * Add Model Change Listener
 	 *
 	 * @param tableName table name
-	 * @param listener listener
+	 * @param listener  listener
 	 */
-	public void addModelChange(@Nullable final String tableName, @Nullable final ModelValidator listener)
-	{
-		if (tableName == null || listener == null)
-		{
+	public void addModelChange(@Nullable final String tableName, @Nullable final ModelValidator listener) {
+		if (tableName == null || listener == null) {
 			return;
 		}
 		//
-		if (listener.getAD_Client_ID() < 0)
-		{
+		if (listener.getAD_Client_ID() < 0) {
 			registerGlobal(listener);
 		}
 		final String propertyName = getPropertyName(tableName, listener);
 		ArrayList<ModelValidator> list = m_modelChangeListeners.get(propertyName);
-		if (list == null)
-		{
+		if (list == null) {
 			list = new ArrayList<>();
 			list.add(listener);
 			m_modelChangeListeners.put(propertyName, list);
-		}
-		else
-		{
+		} else {
 			// metas: add listener only if is not already added
-			if (!list.contains(listener))
-			{
+			if (!list.contains(listener)) {
 				list.add(listener);
-			}
-			else
-			{
+			} else {
 				logger.debug("Listener " + listener + " already added for " + propertyName);
 			}
 		}
-	}	// addModelValidator
+	} // addModelValidator
 
 	@Override
-	public void addModelChange(@Nullable String tableName, @Nullable final IModelInterceptor interceptor)
-	{
-		if (interceptor == null)
-		{
+	public void addModelChange(@Nullable String tableName, @Nullable final IModelInterceptor interceptor) {
+		if (interceptor == null) {
 			return;
 		}
 
@@ -651,35 +601,29 @@ public class ModelValidationEngine implements IModelValidationEngine
 	 * Remove Model Change Listener
 	 *
 	 * @param tableName table name
-	 * @param listener listener
+	 * @param listener  listener
 	 */
 	public void removeModelChange(
 			@Nullable final String tableName,
-			@Nullable final ModelValidator listener)
-	{
-		if (tableName == null || listener == null)
-		{
+			@Nullable final ModelValidator listener) {
+		if (tableName == null || listener == null) {
 			return;
 		}
 
 		final String propertyName = getPropertyName(tableName, listener);
 		final ArrayList<ModelValidator> list = m_modelChangeListeners.get(propertyName);
-		if (list == null)
-		{
+		if (list == null) {
 			return;
 		}
 		list.remove(listener);
-		if (list.isEmpty())
-		{
+		if (list.isEmpty()) {
 			m_modelChangeListeners.remove(propertyName);
 		}
-	}	// removeModelValidator
+	} // removeModelValidator
 
 	@Override
-	public void removeModelChange(@Nullable final String tableName, @Nullable final IModelInterceptor interceptor)
-	{
-		if (interceptor == null)
-		{
+	public void removeModelChange(@Nullable final String tableName, @Nullable final IModelInterceptor interceptor) {
+		if (interceptor == null) {
 			return;
 		}
 
@@ -687,15 +631,11 @@ public class ModelValidationEngine implements IModelValidationEngine
 		this.removeModelChange(tableName, modelValidator);
 	}
 
-	public void fireModelChange(@NonNull final PO po, final ModelChangeType changeType)
-	{
+	public void fireModelChange(@NonNull final PO po, final ModelChangeType changeType) {
 
-		if(!isPerformanceMonitorActive())
-		{
+		if (!isPerformanceMonitorActive()) {
 			fireModelChange0(po, changeType);
-		}
-		else
-		{
+		} else {
 			final String tableName = po.get_TableName();
 			final String changeTypeStr = changeType.toString();
 
@@ -713,17 +653,14 @@ public class ModelValidationEngine implements IModelValidationEngine
 		}
 	}
 
-	public void fireModelChange0(@Nullable final PO po, @NonNull final ModelChangeType changeType)
-	{
-		try (final MDCCloseable ignored = MDC.putCloseable("changeType", changeType.toString()))
-		{
-			if (po == null || m_modelChangeListeners.isEmpty())
-			{
+	public void fireModelChange0(@Nullable final PO po, @NonNull final ModelChangeType changeType) {
+		try (final MDCCloseable ignored = MDC.putCloseable("changeType", changeType.toString())) {
+			if (po == null || m_modelChangeListeners.isEmpty()) {
 				return;
 			}
-			final Boolean dynAttributeDoNotFire = InterfaceWrapperHelper.getDynAttribute(po, DYNATTR_DO_NOT_INVOKE_ON_MODEL_CHANGE);
-			if (dynAttributeDoNotFire != null && dynAttributeDoNotFire)
-			{
+			final Boolean dynAttributeDoNotFire = InterfaceWrapperHelper.getDynAttribute(po,
+					DYNATTR_DO_NOT_INVOKE_ON_MODEL_CHANGE);
+			if (dynAttributeDoNotFire != null && dynAttributeDoNotFire) {
 				return; // nothing to do
 			}
 
@@ -751,20 +688,19 @@ public class ModelValidationEngine implements IModelValidationEngine
 			// Retrieve script interceptors
 			//
 			// now process the script model validator for this event
-			// metas: tsa: 02380: First check if changeType is available in tableEventValidators
-			// FIXME: refactor it and have it as a regular model validator; then remove it from here
+			// metas: tsa: 02380: First check if changeType is available in
+			// tableEventValidators
+			// FIXME: refactor it and have it as a regular model validator; then remove it
+			// from here
 			final List<I_AD_Table_ScriptValidator> scriptValidators;
 			final int countScriptingInterceptors;
-			if (ModelValidator.tableEventValidators.length > changeType.toInt())
-			{
+			if (ModelValidator.tableEventValidators.length > changeType.toInt()) {
 				scriptValidators = Services.get(IADTableScriptValidatorDAO.class).retrieveTableScriptValidators(
 						po.getCtx(),
 						po.get_Table_ID(),
 						ModelValidator.tableEventValidators[changeType.toInt()]);
 				countScriptingInterceptors = scriptValidators != null ? scriptValidators.size() : 0;
-			}
-			else
-			{
+			} else {
 				scriptValidators = null;
 				countScriptingInterceptors = 0;
 			}
@@ -772,30 +708,28 @@ public class ModelValidationEngine implements IModelValidationEngine
 
 			//
 			// In case there are no interceptors, do nothing
-			if (countInterceptors <= 0)
-			{
+			if (countInterceptors <= 0) {
 				return;
 			}
 
 			//
 			// Execute interceptors
 			final String trxName = po.get_TrxName();
-			executeInTrx(trxName, changeType, () -> fireModelChange0(po, changeType, interceptorsSystem, interceptorsClient, scriptValidators));
+			executeInTrx(trxName, changeType,
+					() -> fireModelChange0(po, changeType, interceptorsSystem, interceptorsClient, scriptValidators));
 
 			logger.debug("Executed: ALL {} interceptors for {}", changeType, po);
 		}
-	}	// fireModelChange
+	} // fireModelChange
 
-	private boolean isPerformanceMonitorActive()
-	{
+	private boolean isPerformanceMonitorActive() {
 		return sysConfigBL.getBooleanValue(PERF_MON_SYSCONFIG_NAME, SYS_CONFIG_DEFAULT_VALUE);
 	}
 
-	private PerformanceMonitoringService performanceMonitoringService()
-	{
+	private PerformanceMonitoringService performanceMonitoringService() {
 		PerformanceMonitoringService performanceMonitoringService = _performanceMonitoringService;
-		if (performanceMonitoringService == null || performanceMonitoringService instanceof NoopPerformanceMonitoringService)
-		{
+		if (performanceMonitoringService == null
+				|| performanceMonitoringService instanceof NoopPerformanceMonitoringService) {
 			performanceMonitoringService = _performanceMonitoringService = SpringContextHolder.instance.getBeanOr(
 					PerformanceMonitoringService.class,
 					NoopPerformanceMonitoringService.INSTANCE);
@@ -803,31 +737,31 @@ public class ModelValidationEngine implements IModelValidationEngine
 		return performanceMonitoringService;
 	}
 
-	private void executeInTrx(final String trxName, final TimingType changeTypeOrDocTiming, @NonNull final Runnable runnable)
-	{
+	private void executeInTrx(final String trxName, final TimingType changeTypeOrDocTiming,
+			@NonNull final Runnable runnable) {
 		final boolean runInTrx = changeTypeOrDocTiming != ModelChangeType.BEFORE_SAVE_TRX;
 
-		if (runInTrx)
-		{
-			// NOTE: we are wrapping it to a transaction (savepoint) because we also want to make sure Thread TrxName is set
+		if (runInTrx) {
+			// NOTE: we are wrapping it to a transaction (savepoint) because we also want to
+			// make sure Thread TrxName is set
 			final ITrxManager trxManager = Services.get(ITrxManager.class);
 
-			if (trxManager.isNull(trxName))
-			{
+			if (trxManager.isNull(trxName)) {
 				throw new AdempiereException("trxName shall not be null");
 			}
 
 			final ITrxRunConfig trxRunConfig = trxManager.newTrxRunConfigBuilder()
 					.setTrxPropagation(TrxPropagation.NESTED) // we expect to run into a transaction at this point
 					.setOnRunnableSuccess(OnRunnableSuccess.DONT_COMMIT)
-					.setOnRunnableFail(OnRunnableFail.DONT_ROLLBACK) // OnRunnableFail: don't rollback => no savepoint shall be created (avoid HUGE performance issues)
+					.setOnRunnableFail(OnRunnableFail.DONT_ROLLBACK) // OnRunnableFail: don't rollback => no savepoint
+																		// shall be created (avoid HUGE performance
+																		// issues)
 					.build();
 			trxManager.run(trxName, trxRunConfig, localTrxName -> runnable.run());
 		}
 		//
 		// Execute without wrapping to a particular transaction
-		else
-		{
+		else {
 			runnable.run();
 		}
 
@@ -838,24 +772,23 @@ public class ModelValidationEngine implements IModelValidationEngine
 			@NonNull final ModelChangeType changeType,
 			@Nullable final List<ModelValidator> interceptorsSystem,
 			@Nullable final List<ModelValidator> interceptorsClient,
-			@Nullable final List<I_AD_Table_ScriptValidator> scriptValidators)
-	{
-		if (interceptorsSystem != null)
-		{
+			@Nullable final List<I_AD_Table_ScriptValidator> scriptValidators) {
+		if (interceptorsSystem != null) {
 			// ad_entitytype.modelvalidationclasses
 			invokeModelChangeMethods(po, changeType, interceptorsSystem);
 		}
 
-		if (interceptorsClient != null)
-		{
+		if (interceptorsClient != null) {
 			// ad_client.modelvalidationclasses
 			invokeModelChangeMethods(po, changeType, interceptorsClient);
 		}
 
 		//
 		// now process the script model validator for this event
-		// metas: tsa: 02380: First check if changeType is available in tableEventValidators
-		// FIXME: refactor it and have it as a regular model validator; then remove it from here
+		// metas: tsa: 02380: First check if changeType is available in
+		// tableEventValidators
+		// FIXME: refactor it and have it as a regular model validator; then remove it
+		// from here
 		{
 			fireModelChangeForScriptValidators(po,
 					X_AD_Rule.EVENTTYPE_ModelValidatorTableEvent,
@@ -868,39 +801,30 @@ public class ModelValidationEngine implements IModelValidationEngine
 			final PO po,
 			final String ruleEventType,
 			final TimingType changeTypeOrDocTiming,
-			@Nullable final List<I_AD_Table_ScriptValidator> scriptValidators)
-	{
+			@Nullable final List<I_AD_Table_ScriptValidator> scriptValidators) {
 		// if there are no script validators => do nothing
-		if (scriptValidators == null || scriptValidators.isEmpty())
-		{
+		if (scriptValidators == null || scriptValidators.isEmpty()) {
 			return;
 		}
 
 		final String ruleEventModelValidator;
-		if (X_AD_Rule.EVENTTYPE_ModelValidatorTableEvent.equals(ruleEventType))
-		{
+		if (X_AD_Rule.EVENTTYPE_ModelValidatorTableEvent.equals(ruleEventType)) {
 			final int changeType = changeTypeOrDocTiming.toInt();
 			ruleEventModelValidator = ModelValidator.tableEventValidators[changeType];
-		}
-		else if (X_AD_Rule.EVENTTYPE_ModelValidatorDocumentEvent.equals(ruleEventType))
-		{
-			final DocTimingType docTiming = (DocTimingType)changeTypeOrDocTiming;
+		} else if (X_AD_Rule.EVENTTYPE_ModelValidatorDocumentEvent.equals(ruleEventType)) {
+			final DocTimingType docTiming = (DocTimingType) changeTypeOrDocTiming;
 			ruleEventModelValidator = ModelValidator.documentEventValidators.get(docTiming);
-		}
-		else
-		{
+		} else {
 			throw new IllegalArgumentException("Unknown rule EventType: " + ruleEventType);
 		}
 
-		for (final I_AD_Table_ScriptValidator scriptValidator : scriptValidators)
-		{
-			final I_AD_Rule rule = Services.get(IADRuleDAO.class).retrieveById(po.getCtx(), scriptValidator.getAD_Rule_ID());
+		for (final I_AD_Table_ScriptValidator scriptValidator : scriptValidators) {
+			final I_AD_Rule rule = Services.get(IADRuleDAO.class).retrieveById(po.getCtx(),
+					scriptValidator.getAD_Rule_ID());
 			if (rule != null
 					&& rule.isActive()
-					&& rule.getEventType().equals(ruleEventType))
-			{
-				try
-				{
+					&& rule.getEventType().equals(ruleEventType)) {
+				try {
 					ScriptEngineFactory.get()
 							.createExecutor(rule)
 							.putContext(po.getCtx(), po.get_WindowNo())
@@ -909,9 +833,7 @@ public class ModelValidationEngine implements IModelValidationEngine
 							.putArgument("Event", ruleEventModelValidator)
 							.setThrowExceptionIfResultNotEmpty()
 							.execute(rule.getScript());
-				}
-				catch (final Exception e)
-				{
+				} catch (final Exception e) {
 					throw AdempiereException.wrapIfNeeded(e);
 				}
 			}
@@ -922,27 +844,29 @@ public class ModelValidationEngine implements IModelValidationEngine
 	 * Makes sure given <code>model</code> is valid before firing listeners.<br>
 	 * Logs (but doesn't throw!) an exception if the given model has no trxName.
 	 * <p>
-	 * Background: if trxName is null when firing the events that is usually some development/framework error.<br>
-	 * We rely on this trxName when creating <b>further</b> objects, so if trxName is <code>null</code> then we can't cleanly roll back and will end in some inconsistency fxxx-up in case something
+	 * Background: if trxName is null when firing the events that is usually some
+	 * development/framework error.<br>
+	 * We rely on this trxName when creating <b>further</b> objects, so if trxName
+	 * is <code>null</code> then we can't cleanly roll back and will end in some
+	 * inconsistency fxxx-up in case something
 	 * fails.
 	 * <p>
 	 * Note: In future we might throw the exception instead of just logging it.
 	 */
-	private void assertModelValidBeforeFiringEvent(@NonNull final PO model, @NonNull final TimingType timingType)
-	{
+	private void assertModelValidBeforeFiringEvent(@NonNull final PO model, @NonNull final TimingType timingType) {
 		//
 		// Validate PO's transaction
-		if (!ModelChangeType.isBeforeSaveTrx(timingType) // Skip BEFORE_SAVE_TRX events because those are always out of transaction
-		)
-		{
+		if (!ModelChangeType.isBeforeSaveTrx(timingType) // Skip BEFORE_SAVE_TRX events because those are always out of
+															// transaction
+		) {
 			final String trxName = model.get_TrxName();
-			if (Services.get(ITrxManager.class).isNull(trxName))
-			{
-				final AdempiereException ex = new AdempiereException("When firing " + timingType + " event, PO shall have a trxName set."
-						+ " Ignore it, but check the log for further issues."
-						+ "\n PO: " + model
-						+ "\n Event: " + timingType
-						+ "\n trxName: " + trxName);
+			if (Services.get(ITrxManager.class).isNull(trxName)) {
+				final AdempiereException ex = new AdempiereException(
+						"When firing " + timingType + " event, PO shall have a trxName set."
+								+ " Ignore it, but check the log for further issues."
+								+ "\n PO: " + model
+								+ "\n Event: " + timingType
+								+ "\n trxName: " + trxName);
 				logger.warn(ex.getLocalizedMessage(), ex);
 			}
 		}
@@ -951,10 +875,8 @@ public class ModelValidationEngine implements IModelValidationEngine
 	private void invokeModelChangeMethods(
 			@NonNull final PO po,
 			@NonNull final ModelChangeType changeType,
-			@NonNull final List<ModelValidator> validators)
-	{
-		for (final ModelValidator validator : validators)
-		{
+			@NonNull final List<ModelValidator> validators) {
+		for (final ModelValidator validator : validators) {
 			invokeModelChangeMethod(po, changeType, validator);
 		}
 	}
@@ -962,71 +884,56 @@ public class ModelValidationEngine implements IModelValidationEngine
 	private void invokeModelChangeMethod(
 			@NonNull final PO po,
 			@NonNull final ModelChangeType changeType,
-			@NonNull final ModelValidator validator)
-	{
-		try (final MDCCloseable ignored = MDC.putCloseable("interceptor", validator.toString()))
-		{
-			if (!appliesFor(validator, po.getAD_Client_ID()))
-			{
+			@NonNull final ModelValidator validator) {
+		try (final MDCCloseable ignored = MDC.putCloseable("interceptor", validator.toString())) {
+			if (!appliesFor(validator, po.getAD_Client_ID())) {
 				logger.debug("Skip {} ({}) for {}", validator, changeType, po);
 				return;
 			}
 
-		final Stopwatch stopwatch = Stopwatch.createStarted();
-				try
-		{
+			final Stopwatch stopwatch = Stopwatch.createStarted();
+			try {
 
-			// the default cause
-			final String error = validator.modelChange(po, changeType.toInt());
-			if (Check.isNotBlank(error))
-			{
-				throw new AdempiereException(error);
-			}
-
-					logger.debug("Executed in {}: {} ({}) for {}", stopwatch, validator, changeType, po);
-		}
-		catch (final Exception ex)
-		{
-					logger.debug("Failed executing in {}: {} ({}) for {}", stopwatch, validator, changeType, po, ex);
-			throw AdempiereException.wrapIfNeeded(ex);
-		}
-	}
-
+				// the default cause
+				final String error = validator.modelChange(po, changeType.toInt());
+				if (Check.isNotBlank(error)) {
+					throw new AdempiereException(error);
 				}
+
+				logger.debug("Executed in {}: {} ({}) for {}", stopwatch, validator, changeType, po);
+			} catch (final Exception ex) {
+				logger.debug("Failed executing in {}: {} ({}) for {}", stopwatch, validator, changeType, po, ex);
+				throw AdempiereException.wrapIfNeeded(ex);
+			}
+		}
+
+	}
 
 	/**************************************************************************
 	 * Add Document Validation Listener
 	 */
-	public void addDocValidate(@Nullable final String tableName, @Nullable final ModelValidator listener)
-	{
-		if (tableName == null || listener == null)
-		{
+	public void addDocValidate(@Nullable final String tableName, @Nullable final ModelValidator listener) {
+		if (tableName == null || listener == null) {
 			return;
 		}
 		//
-		if (listener.getAD_Client_ID() < 0)
-		{
+		if (listener.getAD_Client_ID() < 0) {
 			registerGlobal(listener);
 		}
 		final String propertyName = getPropertyName(tableName, listener);
 		ArrayList<ModelValidator> list = m_docValidateListeners.get(propertyName);
-		if (list == null)
-		{
+		if (list == null) {
 			list = new ArrayList<>();
 			list.add(listener);
 			m_docValidateListeners.put(propertyName, list);
-		}
-		else if (!list.contains(listener))
-		{
+		} else if (!list.contains(listener)) {
 			list.add(listener);
 		}
-	}	// addDocValidate
+	} // addDocValidate
 
 	@Override
-	public void addDocValidate(@Nullable final String tableName, @Nullable final IModelInterceptor interceptor)
-	{
-		if (interceptor == null)
-		{
+	public void addDocValidate(@Nullable final String tableName, @Nullable final IModelInterceptor interceptor) {
+		if (interceptor == null) {
 			return;
 		}
 
@@ -1037,51 +944,45 @@ public class ModelValidationEngine implements IModelValidationEngine
 	/**
 	 * Remove Document Validation Listener
 	 */
-	public void removeDocValidate(@Nullable final String tableName, @Nullable final ModelValidator listener)
-	{
-		if (tableName == null || listener == null)
-		{
+	public void removeDocValidate(@Nullable final String tableName, @Nullable final ModelValidator listener) {
+		if (tableName == null || listener == null) {
 			return;
 		}
 		final String propertyName = getPropertyName(tableName, listener);
 		final ArrayList<ModelValidator> list = m_docValidateListeners.get(propertyName);
-		if (list == null)
-		{
+		if (list == null) {
 			return;
 		}
 		list.remove(listener);
-		if (list.isEmpty())
-		{
+		if (list.isEmpty()) {
 			m_docValidateListeners.remove(propertyName);
 		}
-	}	// removeDocValidate
+	} // removeDocValidate
 
 	/**
 	 * Fire Document Validation. Call docValidate method of added validators
 	 *
-	 * @param model if <code>null</code> or if {@link InterfaceWrapperHelper#getPO(Object)} returns <code>null</code> for the given value, then the method will do nothing.
+	 * @param model        if <code>null</code> or if
+	 *                     {@link InterfaceWrapperHelper#getPO(Object)} returns
+	 *                     <code>null</code> for the given value, then the method
+	 *                     will do nothing.
 	 * @param docTimingInt see ModelValidator.TIMING_ constants
-	 * @return always returns <code>null</code>; we keep this string return type only for legacy purposes (when the error message was returned)
+	 * @return always returns <code>null</code>; we keep this string return type
+	 *         only for legacy purposes (when the error message was returned)
 	 * @throws AdempiereException in case of failure
 	 */
 	@Nullable
-	public String fireDocValidate(final Object model, final int docTimingInt)
-	{
+	public String fireDocValidate(final Object model, final int docTimingInt) {
 		final DocTimingType docTiming = DocTimingType.valueOf(docTimingInt);
 		return fireDocValidate(model, docTiming);
 	}
 
 	@Nullable
-	public String fireDocValidate(@NonNull final Object model, @NonNull final DocTimingType docTiming)
-	{
-		try (final MDCCloseable ignored = MDC.putCloseable("docTiming", docTiming.toString()))
-		{
-			if(!isPerformanceMonitorActive())
-			{
+	public String fireDocValidate(@NonNull final Object model, @NonNull final DocTimingType docTiming) {
+		try (final MDCCloseable ignored = MDC.putCloseable("docTiming", docTiming.toString())) {
+			if (!isPerformanceMonitorActive()) {
 				return fireDocValidate0(model, docTiming);
-			}
-			else
-			{
+			} else {
 				final String tableName = InterfaceWrapperHelper.getModelTableName(model);
 				final int recordId = InterfaceWrapperHelper.getId(model);
 				final String docTimingStr = docTiming.toString();
@@ -1102,16 +1003,14 @@ public class ModelValidationEngine implements IModelValidationEngine
 	}
 
 	@Nullable
-	private String fireDocValidate0(final Object model, final DocTimingType docTiming)
-	{
-		if (model == null)
-		{
-			return null; // avoid InterfaceWrapperHelper from throwing an exception under any circumstances
+	private String fireDocValidate0(final Object model, final DocTimingType docTiming) {
+		if (model == null) {
+			return null; // avoid InterfaceWrapperHelper from throwing an exception under any
+							// circumstances
 		}
 
 		final PO po = InterfaceWrapperHelper.getPO(model);
-		if (po == null || m_docValidateListeners.isEmpty())
-		{
+		if (po == null || m_docValidateListeners.isEmpty()) {
 			return null;
 		}
 		//
@@ -1138,34 +1037,33 @@ public class ModelValidationEngine implements IModelValidationEngine
 		// Retrieve script interceptors
 		//
 		// now process the script model validator for this event
-		// metas: tsa: 02380: First check if changeType is available in tableEventValidators
-		// FIXME: refactor it and have it as a regular model validator; then remove it from here
+		// metas: tsa: 02380: First check if changeType is available in
+		// tableEventValidators
+		// FIXME: refactor it and have it as a regular model validator; then remove it
+		// from here
 		final List<I_AD_Table_ScriptValidator> scriptValidators;
-		if (ModelValidator.documentEventValidators.containsKey(docTiming))
-		{
+		if (ModelValidator.documentEventValidators.containsKey(docTiming)) {
 			scriptValidators = Services.get(IADTableScriptValidatorDAO.class).retrieveTableScriptValidators(
 					po.getCtx(),
 					po.get_Table_ID(),
 					ModelValidator.documentEventValidators.get(docTiming));
 			final int countScriptingInterceptors = scriptValidators != null ? scriptValidators.size() : 0;
 			countInterceptors += countScriptingInterceptors;
-		}
-		else
-		{
+		} else {
 			scriptValidators = null;
 		}
 
 		//
 		// In case there are no interceptors, do nothing
-		if (countInterceptors <= 0)
-		{
+		if (countInterceptors <= 0) {
 			return null;
 		}
 
 		//
 		// Execute interceptors
 		final String trxName = po.get_TrxName();
-		executeInTrx(trxName, docTiming, () -> fireDocValidate0(po, docTiming, interceptorsSystem, interceptorsClient, scriptValidators));
+		executeInTrx(trxName, docTiming,
+				() -> fireDocValidate0(po, docTiming, interceptorsSystem, interceptorsClient, scriptValidators));
 
 		logger.trace("Executed ALL {} {} interceptors for {}", countInterceptors, docTiming, po);
 
@@ -1176,23 +1074,21 @@ public class ModelValidationEngine implements IModelValidationEngine
 			@NonNull final DocTimingType docTiming,
 			@Nullable final List<ModelValidator> interceptorsSystem,
 			@Nullable final List<ModelValidator> interceptorsClient,
-			@Nullable final List<I_AD_Table_ScriptValidator> scriptValidators)
-	{
-		if (interceptorsSystem != null)
-		{
+			@Nullable final List<I_AD_Table_ScriptValidator> scriptValidators) {
+		if (interceptorsSystem != null) {
 			// ad_entitytype.modelvalidationclasses
 			fireDocValidate(po, docTiming, interceptorsSystem);
 		}
 
-		if (interceptorsClient != null)
-		{
+		if (interceptorsClient != null) {
 			// ad_client.modelvalidationclasses
 			fireDocValidate(po, docTiming, interceptorsClient);
 		}
 
 		//
 		// now process the script model validator for this docTiming
-		// FIXME: refactor it and have it as a regular model validator; then remove it from here
+		// FIXME: refactor it and have it as a regular model validator; then remove it
+		// from here
 		{
 			fireModelChangeForScriptValidators(po,
 					X_AD_Rule.EVENTTYPE_ModelValidatorDocumentEvent,
@@ -1204,10 +1100,8 @@ public class ModelValidationEngine implements IModelValidationEngine
 	private void fireDocValidate(
 			@NonNull final PO po,
 			@NonNull final DocTimingType docTiming,
-			@NonNull final List<ModelValidator> interceptors)
-	{
-		for (final ModelValidator interceptor : interceptors)
-		{
+			@NonNull final List<ModelValidator> interceptors) {
+		for (final ModelValidator interceptor : interceptors) {
 			invokeDocValidateMethod(po, docTiming, interceptor);
 		}
 	}
@@ -1215,74 +1109,62 @@ public class ModelValidationEngine implements IModelValidationEngine
 	private void invokeDocValidateMethod(
 			@NonNull final PO po,
 			@NonNull final DocTimingType docTiming,
-			@NonNull final ModelValidator interceptor)
-	{
-		if (!appliesFor(interceptor, po.getAD_Client_ID()))
-		{
+			@NonNull final ModelValidator interceptor) {
+		if (!appliesFor(interceptor, po.getAD_Client_ID())) {
 			logger.trace("Skip {} ({}) for {}", interceptor, docTiming, po);
 			return;
 		}
 
 		final Stopwatch stopwatch = Stopwatch.createStarted();
-		try
-		{
+		try {
 			final String error = interceptor.docValidate(po, docTiming.toInt());
-			if (!Check.isEmpty(error))
-			{
+			if (!Check.isEmpty(error)) {
 				throw new AdempiereException(error);
 			}
 
 			logger.trace("Executed in {}: {} ({}) for {}", stopwatch, interceptor, docTiming, po);
-		}
-		catch (final Exception ex)
-		{
+		} catch (final Exception ex) {
 			logger.trace("Failed executing in {}: {} ({}) for {}", stopwatch, interceptor, docTiming, po, ex);
 			throw AdempiereException.wrapIfNeeded(ex);
 		}
 	}
 
 	@Override
-	public void addImportInterceptor(final  String importTableName, final IImportInterceptor listener)
-	{
+	public void addImportInterceptor(final String importTableName, final IImportInterceptor listener) {
 		final String propertyName = getPropertyName(importTableName);
 		ArrayList<IImportInterceptor> list = m_impValidateListeners.get(propertyName);
-		if (list == null)
-		{
+		if (list == null) {
 			list = new ArrayList<>();
 			list.add(listener);
 			m_impValidateListeners.put(propertyName, list);
-		}
-		else
-		{
+		} else {
 			list.add(listener);
 		}
 	}
 
 	/**
-	 * Fire Import Validation. Call {@link IImportInterceptor#onImport(IImportProcess, Object, Object, int)} or registered validators.
+	 * Fire Import Validation. Call
+	 * {@link IImportInterceptor#onImport(IImportProcess, Object, Object, int)} or
+	 * registered validators.
 	 *
-	 * @param process import process
+	 * @param process     import process
 	 * @param importModel import record (e.g. X_I_BPartner)
 	 * @param targetModel target model (e.g. MBPartner, MBPartnerLocation, MUser)
-	 * @param timing see ImportValidator.TIMING_* constants
+	 * @param timing      see ImportValidator.TIMING_* constants
 	 */
 	public <ImportRecordType> void fireImportValidate(
 			final IImportProcess<ImportRecordType> process,
 			final ImportRecordType importModel,
 			final Object targetModel,
-			final int timing)
-	{
-		if (m_impValidateListeners.isEmpty())
-		{
+			final int timing) {
+		if (m_impValidateListeners.isEmpty()) {
 			return;
 		}
 
 		final String propertyName = getPropertyName(process.getImportTableName());
 		final ArrayList<IImportInterceptor> list = m_impValidateListeners.get(propertyName);
-		if (list != null)
-		{
-			for (final IImportInterceptor intercepto : list)
-			{
+		if (list != null) {
+			for (final IImportInterceptor intercepto : list) {
 				intercepto.onImport(process, importModel, targetModel, timing);
 			}
 		}
@@ -1294,45 +1176,39 @@ public class ModelValidationEngine implements IModelValidationEngine
 	 * @return info
 	 */
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return "ModelValidationEngine[" + "Validators=#" + m_validators.size()
 				+ ", ModelChange=#" + m_modelChangeListeners.size()
 				+ ", DocValidate=#" + m_docValidateListeners.size()
 				+ "]";
-	}	// toString
+	} // toString
 
 	/**
 	 * Create Model Validators Info
 	 *
-	 * @param sb optional string buffer
+	 * @param sb  optional string buffer
 	 * @param ctx context
 	 * @return Model Validators Info
 	 *
 	 * @author Teo Sarca, FR [ 1724662 ]
 	 */
-	public StringBuilder getInfoDetail(StringBuilder sb, Properties ctx)
-	{
-		if (sb == null)
-		{
+	public StringBuilder getInfoDetail(StringBuilder sb, Properties ctx) {
+		if (sb == null) {
 			sb = new StringBuilder();
 		}
 		sb.append("=== ModelValidationEngine ===").append(Env.NL);
 		sb.append("Validators #").append(m_validators.size()).append(Env.NL);
-		for (final ModelValidator mv : m_validators)
-		{
+		for (final ModelValidator mv : m_validators) {
 			sb.append(mv.toString()).append(Env.NL);
 		}
 		sb.append(Env.NL).append(Env.NL);
 		//
 		sb.append("ModelChange #").append(m_modelChangeListeners.size()).append(Env.NL);
 		Iterator<String> it = m_modelChangeListeners.keySet().iterator();
-		while (it.hasNext())
-		{
+		while (it.hasNext()) {
 			final String key = it.next();
 			final ArrayList<ModelValidator> list = m_modelChangeListeners.get(key);
-			for (final ModelValidator mv : list)
-			{
+			for (final ModelValidator mv : list) {
 				sb.append(key).append(": ").append(mv.toString()).append(Env.NL);
 			}
 		}
@@ -1340,12 +1216,10 @@ public class ModelValidationEngine implements IModelValidationEngine
 		//
 		sb.append("DocValidate #").append(m_docValidateListeners.size()).append(Env.NL);
 		it = m_docValidateListeners.keySet().iterator();
-		while (it.hasNext())
-		{
+		while (it.hasNext()) {
 			final String key = it.next();
 			final ArrayList<ModelValidator> list = m_docValidateListeners.get(key);
-			for (final ModelValidator mv : list)
-			{
+			for (final ModelValidator mv : list) {
 				sb.append(key).append(": ").append(mv.toString()).append(Env.NL);
 			}
 		}
@@ -1358,34 +1232,25 @@ public class ModelValidationEngine implements IModelValidationEngine
 	 * After Load Preferences into Context for selected client.
 	 *
 	 * @param ctx context
-	 * @author Teo Sarca - FR [ 1670025 ] - <a href="https://sourceforge.net/tracker/index.php?func=detail&aid=1670025&group_id=176962&atid=879335">https://sourceforge.net/tracker/index.php?func=detail&aid=1670025&group_id=176962&atid=879335</a>
+	 * @author Teo Sarca - FR [ 1670025 ] - <a href=
+	 *         "https://sourceforge.net/tracker/index.php?func=detail&aid=1670025&group_id=176962&atid=879335">https://sourceforge.net/tracker/index.php?func=detail&aid=1670025&group_id=176962&atid=879335</a>
 	 */
-	public void afterLoadPreferences(@NonNull final Properties ctx)
-	{
+	public void afterLoadPreferences(@NonNull final Properties ctx) {
 		final int AD_Client_ID = Env.getAD_Client_ID(ctx);
-		for (final ModelValidator validator : m_validators)
-		{
+		for (final ModelValidator validator : m_validators) {
 			if (AD_Client_ID == validator.getAD_Client_ID()
-					|| m_globalValidators.contains(validator))
-			{
+					|| m_globalValidators.contains(validator)) {
 				java.lang.reflect.Method m = null;
-				try
-				{
+				try {
 					m = validator.getClass().getMethod("afterLoadPreferences", new Class[] { Properties.class });
-				}
-				catch (final NoSuchMethodException e)
-				{
+				} catch (final NoSuchMethodException e) {
 					// ignore
 				}
-				try
-				{
-					if (m != null)
-					{
+				try {
+					if (m != null) {
 						m.invoke(validator, ctx);
 					}
-				}
-				catch (final Exception e)
-				{
+				} catch (final Exception e) {
 					logger.warn("{}: {}", validator, e.getLocalizedMessage());
 				}
 			}
@@ -1395,139 +1260,124 @@ public class ModelValidationEngine implements IModelValidationEngine
 	/**
 	 * Before Save Properties for selected client.
 	 */
-	public void beforeSaveProperties()
-	{
+	public void beforeSaveProperties() {
 		final int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
-		for (final ModelValidator validator : m_validators)
-		{
+		for (final ModelValidator validator : m_validators) {
 			if (AD_Client_ID == validator.getAD_Client_ID()
-					|| m_globalValidators.contains(validator))
-			{
+					|| m_globalValidators.contains(validator)) {
 				java.lang.reflect.Method m = null;
-				try
-				{
+				try {
 					m = validator.getClass().getMethod("beforeSaveProperties");
-				}
-				catch (final NoSuchMethodException e)
-				{
+				} catch (final NoSuchMethodException e) {
 					// ignore
 				}
-				try
-				{
-					if (m != null)
-					{
+				try {
+					if (m != null) {
 						m.invoke(validator);
 					}
-				}
-				catch (final Exception e)
-				{
+				} catch (final Exception e) {
 					logger.warn("{}: {}", validator, e.getLocalizedMessage());
 				}
 			}
 		}
 	}
 
-	private void registerGlobal(final ModelValidator validator)
-	{
-		if (!m_globalValidators.contains(validator))
-		{
+	private void registerGlobal(final ModelValidator validator) {
+		if (!m_globalValidators.contains(validator)) {
 			m_globalValidators.add(validator);
 		}
 	}
 
-	private final boolean appliesFor(@NonNull final ModelValidator validator, final int AD_Client_ID)
-	{
+	private final boolean appliesFor(@NonNull final ModelValidator validator, final int AD_Client_ID) {
 		return AD_Client_ID == validator.getAD_Client_ID()
 				|| m_globalValidators.contains(validator);
 	}
 
-	private String getPropertyName(final String tableName)
-	{
+	private String getPropertyName(final String tableName) {
 		return tableName + "*";
 	}
 
-	private String getPropertyName(final String tableName, final int AD_Client_ID)
-	{
+	private String getPropertyName(final String tableName, final int AD_Client_ID) {
 		return tableName + AD_Client_ID;
 	}
 
-	private String getPropertyName(final String tableName, final ModelValidator listener)
-	{
-		if (m_globalValidators.contains(listener))
-		{
+	private String getPropertyName(final String tableName, final ModelValidator listener) {
+		if (m_globalValidators.contains(listener)) {
 			return getPropertyName(tableName);
-		}
-		else
-		{
+		} else {
 			return getPropertyName(tableName, listener.getAD_Client_ID());
 		}
 	}
 
 	@Override
-	public void addModelValidator(@NonNull final Object validator)
-	{
+	public void addModelValidator(@NonNull final Object validator) {
 		final I_AD_Client client = null;
 		addModelValidator(validator, client);
 	}
 
 	@Override
-	public void addModelValidator(@NonNull final Object validator, @Nullable final I_AD_Client client)
-	{
-		if (validator instanceof ModelValidator)
-		{
-			initialize((ModelValidator)validator, client);
-		}
-		else if (validator instanceof IModelInterceptor)
-		{
-			final IModelInterceptor interceptor = (IModelInterceptor)validator;
-			final ModelValidator interceptor2validator = ModelInterceptor2ModelValidatorWrapper.wrapIfNeeded(interceptor);
+	public void addModelValidator(@NonNull final Object validator, @Nullable final I_AD_Client client) {
+		if (validator instanceof ModelValidator) {
+			initialize((ModelValidator) validator, client);
+		} else if (validator instanceof IModelInterceptor) {
+			final IModelInterceptor interceptor = (IModelInterceptor) validator;
+			final ModelValidator interceptor2validator = ModelInterceptor2ModelValidatorWrapper
+					.wrapIfNeeded(interceptor);
 			initialize(interceptor2validator, client);
-		}
-		else
-		{
-			final IModelInterceptor annotatedInterceptor = AnnotatedModelInterceptorFactory.get().createModelInterceptor(validator);
-			if (annotatedInterceptor == null)
-			{
+		} else {
+			final IModelInterceptor annotatedInterceptor = AnnotatedModelInterceptorFactory.get()
+					.createModelInterceptor(validator);
+			if (annotatedInterceptor == null) {
 				logger.warn("No pointcuts found for model validator: " + validator + " [SKIP]");
-			}
-			else
-			{
-				final ModelValidator annotatedValidator = ModelInterceptor2ModelValidatorWrapper.wrapIfNeeded(annotatedInterceptor);
+			} else {
+				final ModelValidator annotatedValidator = ModelInterceptor2ModelValidatorWrapper
+						.wrapIfNeeded(annotatedInterceptor);
 				initialize(annotatedValidator, client);
 			}
 		}
 	}
 
 	/**
-	 * Specify if model changed events with type=deferred should be processed when they occur (still after the po has been saved an all other logic has been finished) or some time later.
+	 * Specify if model changed events with type=deferred should be processed when
+	 * they occur (still after the po has been saved an all other logic has been
+	 * finished) or some time later.
 	 */
-	public void enableModelValidatorSubsequentProcessing(final ModelValidator validator, final boolean processDirectly)
-	{
+	public void enableModelValidatorSubsequentProcessing(final ModelValidator validator,
+			final boolean processDirectly) {
 		m_modelChangeSubsequent.put(validator, processDirectly);
 	}
 
-	public void disableModelValidatorSubsequentProcessing(final ModelValidator validator)
-	{
+	public void disableModelValidatorSubsequentProcessing(final ModelValidator validator) {
 		m_modelChangeSubsequent.remove(validator);
 	}
 
-	// public static final String CTX_InitEntityTypes = ModelValidationEngine.class.getCanonicalName() + "#InitEntityTypes";
+	// public static final String CTX_InitEntityTypes =
+	// ModelValidationEngine.class.getCanonicalName() + "#InitEntityTypes";
 
 	/**
-	 * Name of a dynamic attribute to disable model interceptors (i.e. validators) on ModelChange for a particular PO. Set the value to <code>true</code> if you want to bypass <b>all</b> model
+	 * Name of a dynamic attribute to disable model interceptors (i.e. validators)
+	 * on ModelChange for a particular PO. Set the value to <code>true</code> if you
+	 * want to bypass <b>all</b> model
 	 * validators.
 	 * <p>
 	 *
-	 * @FIXME [12:09:52] Teo metas: use org.adempiere.ad.persistence.ModelDynAttributeAccessor<ModelType, AttributeType> to define the dynamic attribute
+	 * @FIXME [12:09:52] Teo metas: use
+	 *        org.adempiere.ad.persistence.ModelDynAttributeAccessor<ModelType,
+	 *        AttributeType> to define the dynamic attribute
 	 */
 	public static final String DYNATTR_DO_NOT_INVOKE_ON_MODEL_CHANGE = "DO_NOT_INVOKE_ON_MODEL_CHANGE";
 
-	private enum State
-	{
-		/** In this state, {@link #get()} does not attempt to initialize this model validator and basically returns a "no-op" instance. */
+	private enum State {
+		/**
+		 * In this state, {@link #get()} does not attempt to initialize this model
+		 * validator and basically returns a "no-op" instance.
+		 */
 		SKIP_INITIALIZATION,
 
-		/** In this state, the next invocation of {@link #get()} will to initialize the model validator before returning an instance. */
+		/**
+		 * In this state, the next invocation of {@link #get()} will to initialize the
+		 * model validator before returning an instance.
+		 */
 		TO_BE_INITALIZED,
 
 		INITIALIZING,
@@ -1537,23 +1387,19 @@ public class ModelValidationEngine implements IModelValidationEngine
 
 	private static State state = State.TO_BE_INITALIZED;
 
-	public static IAutoCloseable postponeInit()
-	{
+	public static IAutoCloseable postponeInit() {
 		changeStateToSkipInitialization();
 		return ModelValidationEngine::changeStateToBeInitialized;
 	}
 
-	private static synchronized void changeStateToSkipInitialization()
-	{
+	private static synchronized void changeStateToSkipInitialization() {
 		Check.assumeEquals(state, State.TO_BE_INITALIZED);
 		state = State.SKIP_INITIALIZATION;
 	}
 
-	private static synchronized void changeStateToBeInitialized()
-	{
-		if (state == State.SKIP_INITIALIZATION)
-		{
+	private static synchronized void changeStateToBeInitialized() {
+		if (state == State.SKIP_INITIALIZATION) {
 			state = State.TO_BE_INITALIZED;
 		}
 	}
-}	// ModelValidatorEngine
+} // ModelValidatorEngine

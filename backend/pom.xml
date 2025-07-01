@@ -215,8 +215,6 @@
 
         <module>de.metas.pos.base</module>
         <module>de.metas.pos.rest-api</module>
-
-        <module>metasfresh-webui-api</module>
         <module>metasfresh-dist</module>
 
         <module>de-metas-salesorder</module>
@@ -672,6 +670,10 @@
                     <skip>true</skip>
                 </configuration>
             </plugin>
+            <!-- <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin> -->
         </plugins>
     </build>
 

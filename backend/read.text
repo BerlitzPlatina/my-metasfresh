@@ -1,0 +1,6 @@
+mvn clean install -Duser.timezone=Europe/Berlin
+mvn clean install --offline -Dmaven.gitcommitid.skip=true -DskipTests
+mvn clean install -Dmaven.gitcommitid.skip=true -DskipTests
+
+
+pg_restore -U metasfresh -d metasfresh var/lib/postgresql/data/metasfresh-5_172.pgdump

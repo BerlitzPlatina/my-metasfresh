@@ -32,30 +32,25 @@ import lombok.Value;
  */
 
 @Value
-public class RefundConfigId implements RepoIdAware
-{
+public class RefundConfigId implements RepoIdAware {
 	@JsonCreator
-	public static RefundConfigId ofRepoId(int repoId)
-	{
+	public static RefundConfigId ofRepoId(int repoId) {
 		return new RefundConfigId(repoId);
 	}
 
-	public static RefundConfigId ofRepoIdOrNull(@Nullable final int repoId)
-	{
+	public static RefundConfigId ofRepoIdOrNull(@Nullable final Integer repoId) {
 		return repoId > 0 ? ofRepoId(repoId) : null;
 	}
 
 	int repoId;
 
-	private RefundConfigId(final int repoId)
-	{
+	private RefundConfigId(final int repoId) {
 		this.repoId = Check.assumeGreaterThanZero(repoId, "repoId");
 	}
 
 	@Override
 	@JsonValue
-	public int getRepoId()
-	{
+	public int getRepoId() {
 		return repoId;
 	}
 }

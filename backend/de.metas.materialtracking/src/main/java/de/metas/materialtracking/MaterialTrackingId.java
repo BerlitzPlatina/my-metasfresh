@@ -35,45 +35,37 @@ import lombok.Value;
  */
 
 @Value
-public class MaterialTrackingId implements RepoIdAware
-{
+public class MaterialTrackingId implements RepoIdAware {
 	int repoId;
 
 	@JsonCreator
-	public static MaterialTrackingId ofRepoId(final int repoId)
-	{
+	public static MaterialTrackingId ofRepoId(final int repoId) {
 		return new MaterialTrackingId(repoId);
 	}
 
-	public static MaterialTrackingId ofRepoIdOrNull(@Nullable final Integer repoId)
-	{
+	public static MaterialTrackingId ofRepoIdOrNull(@Nullable final Integer repoId) {
 		return repoId != null && repoId > 0 ? new MaterialTrackingId(repoId) : null;
 	}
 
-	public static MaterialTrackingId ofRepoIdOrNull(@Nullable final int repoId)
-	{
+	public static MaterialTrackingId ofRepoIdOrNull(final int repoId) {
 		return repoId > 0 ? new MaterialTrackingId(repoId) : null;
 	}
 
-	private MaterialTrackingId(final int repoId)
-	{
+	private MaterialTrackingId(final int repoId) {
 		this.repoId = Check.assumeGreaterThanZero(repoId, "productId");
 	}
 
-	public TableRecordReference toTableRecordReference()
-	{
+	public TableRecordReference toTableRecordReference() {
 		return TableRecordReference.of(I_M_Material_Tracking.Table_Name, getRepoId());
 	}
 
-	public static int toRepoId(final MaterialTrackingId materialTrackingId)
-	{
+	public static int toRepoId(final MaterialTrackingId materialTrackingId) {
 		return materialTrackingId != null ? materialTrackingId.getRepoId() : -1;
 	}
 
 	@Override
 	@JsonValue
-	public int getRepoId()
-	{
+	public int getRepoId() {
 		return repoId;
 	}
 }

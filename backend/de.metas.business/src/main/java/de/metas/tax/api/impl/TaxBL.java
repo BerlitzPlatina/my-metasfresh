@@ -33,8 +33,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
-public class TaxBL implements de.metas.tax.api.ITaxBL
-{
+public class TaxBL implements de.metas.tax.api.ITaxBL {
 	private static final Logger log = LogManager.getLogger(TaxBL.class);
 	private final ITaxDAO taxDAO = Services.get(ITaxDAO.class);
 	private final IBPartnerOrgBL bPartnerOrgBL = Services.get(IBPartnerOrgBL.class);
@@ -42,18 +41,20 @@ public class TaxBL implements de.metas.tax.api.ITaxBL
 	private final ICountryDAO countryDAO = Services.get(ICountryDAO.class);
 
 	@Override
-	public Tax getTaxById(final TaxId taxId)
-	{
+	public Tax getTaxById(final TaxId taxId) {
 		return taxDAO.getTaxById(taxId);
 	}
 
 	/**
-	 * Do not attempt to retrieve the C_Tax for an order (i.e invoicing is done at a different time - 1 year - from the order)<br>
-	 * Also note that packaging material receipts don't have an order line and if this one had, no IC would be created for it by this handler.<br>
+	 * Do not attempt to retrieve the C_Tax for an order (i.e invoicing is done at a
+	 * different time - 1 year - from the order)<br>
+	 * Also note that packaging material receipts don't have an order line and if
+	 * this one had, no IC would be created for it by this handler.<br>
 	 * Instead, always rely on taxing BL to bind the tax to the invoice candidate
 	 * <p>
 	 * Try to rely on the tax category from the pricing result<br>
-	 * 07739: If that's not available, then throw an exception; don't attempt to retrieve the German tax because that method proved to return a wrong result
+	 * 07739: If that's not available, then throw an exception; don't attempt to
+	 * retrieve the German tax because that method proved to return a wrong result
 	 */
 	@Override
 	@NonNull
@@ -66,19 +67,16 @@ public class TaxBL implements de.metas.tax.api.ITaxBL
 			@Nullable final WarehouseId warehouseId,
 			@NonNull final BPartnerLocationAndCaptureId shipBPartnerLocationId,
 			@NonNull final SOTrx soTrx,
-			@Nullable final VatCodeId vatCodeId)
-	{
+			@Nullable final VatCodeId vatCodeId) {
 		final Tax taxFromVatCode = taxDAO.getTaxFromVatCodeIfManualOrNull(vatCodeId);
-		if (taxFromVatCode != null)
-		{
+		if (taxFromVatCode != null) {
 			return taxFromVatCode.getTaxId();
 		}
-		if (taxCategoryId != null)
-		{
+		if (taxCategoryId != null) {
 			final CountryId countryFromId = Optional.ofNullable(warehouseId)
-				.map(warehouseBL::getCountryId)
-				.orElseGet(() -> Optional.ofNullable(bPartnerOrgBL.getOrgCountryId(orgId))
-						.orElseGet(countryDAO::getDefaultCountryId));
+					.map(warehouseBL::getCountryId)
+					.orElseGet(() -> Optional.ofNullable(bPartnerOrgBL.getOrgCountryId(orgId))
+							.orElseGet(countryDAO::getDefaultCountryId));
 
 			final Tax tax = taxDAO.getBy(TaxQuery.builder()
 					.fromCountryId(countryFromId)
@@ -90,8 +88,7 @@ public class TaxBL implements de.metas.tax.api.ITaxBL
 					.soTrx(soTrx)
 					.build());
 
-			if (tax != null)
-			{
+			if (tax != null) {
 				return tax.getTaxId();
 			}
 		}
@@ -117,27 +114,24 @@ public class TaxBL implements de.metas.tax.api.ITaxBL
 	}
 
 	@Nullable
-	private int getTaxFromVatCodeIdIfManualOrNull(final @Nullable VatCodeId vatCodeId)
-	{
+	private Integer getTaxFromVatCodeIdIfManualOrNull(final @Nullable VatCodeId vatCodeId) {
 		final Tax tax = taxDAO.getTaxFromVatCodeIfManualOrNull(vatCodeId);
 		return TaxId.toRepoId(tax != null ? tax.getTaxId() : null);
 	}
 
-	public CalculateTaxResult calculateTax(final I_C_Tax tax, final BigDecimal amount, final boolean taxIncluded, final int scale)
-	{
+	public CalculateTaxResult calculateTax(final I_C_Tax tax, final BigDecimal amount, final boolean taxIncluded,
+			final int scale) {
 		return TaxUtils.from(tax).calculateTax(amount, taxIncluded, scale);
 	}
 
-	public BigDecimal calculateTaxAmt(final I_C_Tax tax, final BigDecimal amount, final boolean taxIncluded, final int scale)
-	{
+	public BigDecimal calculateTaxAmt(final I_C_Tax tax, final BigDecimal amount, final boolean taxIncluded,
+			final int scale) {
 		return calculateTax(tax, amount, taxIncluded, scale).getTaxAmount();
 	}
 
 	@Override
-	public void setupIfIsWholeTax(final I_C_Tax tax)
-	{
-		if (!tax.isWholeTax())
-		{
+	public void setupIfIsWholeTax(final I_C_Tax tax) {
+		if (!tax.isWholeTax()) {
 			return;
 		}
 
@@ -148,8 +142,7 @@ public class TaxBL implements de.metas.tax.api.ITaxBL
 	}
 
 	@Override
-	public TaxCategoryId retrieveRegularTaxCategoryId()
-	{
+	public TaxCategoryId retrieveRegularTaxCategoryId() {
 		final TaxCategoryId taxCategoryId = Services.get(IQueryBL.class)
 				.createQueryBuilder(I_C_TaxCategory.class)
 				.addEqualsFilter(I_C_TaxCategory.COLUMN_VATType, X_C_TaxCategory.VATTYPE_RegularVAT)
@@ -159,8 +152,7 @@ public class TaxBL implements de.metas.tax.api.ITaxBL
 				.create()
 				.firstId(TaxCategoryId::ofRepoIdOrNull);
 
-		if (taxCategoryId == null)
-		{
+		if (taxCategoryId == null) {
 			throw new AdempiereException("No tax category found for Regular VATType");
 		}
 
@@ -168,8 +160,7 @@ public class TaxBL implements de.metas.tax.api.ITaxBL
 	}
 
 	@NonNull
-	public Optional<TaxCategoryId> getTaxCategoryIdByInternalName(@NonNull final String internalName)
-	{
+	public Optional<TaxCategoryId> getTaxCategoryIdByInternalName(@NonNull final String internalName) {
 		return Services.get(IQueryBL.class)
 				.createQueryBuilder(I_C_TaxCategory.class)
 				.addOnlyActiveRecordsFilter()
@@ -181,21 +172,17 @@ public class TaxBL implements de.metas.tax.api.ITaxBL
 	}
 
 	@Override
-	public List<Tax> getChildTaxes(@NonNull final TaxId taxId)
-	{
+	public List<Tax> getChildTaxes(@NonNull final TaxId taxId) {
 		return taxDAO.getChildTaxes(taxId);
 	}
 
 	@Override
-	public Tax getDefaultTax(final TaxCategoryId taxCategoryId)
-	{
+	public Tax getDefaultTax(final TaxCategoryId taxCategoryId) {
 		return taxDAO.getDefaultTax(taxCategoryId);
 	}
 
-
 	@NonNull
-	public Optional<TaxCategoryId> getTaxCategoryIdByName(@NonNull final String name)
-	{
+	public Optional<TaxCategoryId> getTaxCategoryIdByName(@NonNull final String name) {
 		return Services.get(IQueryBL.class)
 				.createQueryBuilder(I_C_TaxCategory.class)
 				.addOnlyActiveRecordsFilter()

@@ -34,29 +34,25 @@ import de.metas.util.lang.RepoIdAware;
  * @version $Id: KeyNamePair.java,v 1.2 2006/07/30 00:52:23 jjanke Exp $
  */
 @Immutable
-public final class KeyNamePair extends NamePair
-{
+public final class KeyNamePair extends NamePair {
 
 	public static final KeyNamePair of(
 			@Nullable final RepoIdAware key,
-			@Nullable final String name)
-	{
+			@Nullable final String name) {
 		final int keyInt = key != null ? key.getRepoId() : EMPTY.getKey();
 		return of(keyInt, name, null/* description */);
 	}
 
 	public static final KeyNamePair of(
-			@Nullable final int key,
-			@Nullable final String name)
-	{
+			@Nullable final Integer key,
+			@Nullable final String name) {
 		return of(key, name, null/* description */);
 	}
 
 	public static final KeyNamePair of(
 			@Nullable final RepoIdAware key,
 			@Nullable final String name,
-			@Nullable final String description)
-	{
+			@Nullable final String description) {
 		final int keyInt = key != null ? key.getRepoId() : EMPTY.getKey();
 		return of(keyInt, name, description);
 	}
@@ -65,19 +61,15 @@ public final class KeyNamePair extends NamePair
 	public static final KeyNamePair of(
 			@JsonProperty("k") final int key,
 			@JsonProperty("n") final String name,
-			@JsonProperty("description") final String description)
-	{
-		if (key == EMPTY.getKey() && Objects.equals(name, EMPTY.getName()))
-		{
+			@JsonProperty("description") final String description) {
+		if (key == EMPTY.getKey() && Objects.equals(name, EMPTY.getName())) {
 			return EMPTY;
 		}
 		return new KeyNamePair(key, name, description);
 	}
 
-	public static final KeyNamePair of(final int key)
-	{
-		if (key < 0)
-		{
+	public static final KeyNamePair of(final int key) {
+		if (key < 0) {
 			return EMPTY;
 		}
 		return new KeyNamePair(key, "<" + key + ">", null/* help */);
@@ -91,8 +83,7 @@ public final class KeyNamePair extends NamePair
 	 * @deprecated please use the static creator methods instead.
 	 */
 	@Deprecated
-	public KeyNamePair(final int key, final String name)
-	{
+	public KeyNamePair(final int key, final String name) {
 		super(name, null/* description */);
 		this.m_key = key;
 	}
@@ -100,13 +91,12 @@ public final class KeyNamePair extends NamePair
 	/**
 	 * Constructor KeyValue Pair -
 	 *
-	 * @param key Key (-1 is considered as null)
+	 * @param key  Key (-1 is considered as null)
 	 * @param name string representation
 	 * @deprecated please use the static creator methods instead.
 	 */
 	@Deprecated
-	public KeyNamePair(final int key, @Nullable final String name, @Nullable final String description)
-	{
+	public KeyNamePair(final int key, @Nullable final String name, @Nullable final String description) {
 		super(name, description);
 		this.m_key = key;
 	}
@@ -120,10 +110,9 @@ public final class KeyNamePair extends NamePair
 	 * @return key
 	 */
 	@JsonProperty("k")
-	public int getKey()
-	{
+	public int getKey() {
 		return m_key;
-	}	// getKey
+	} // getKey
 
 	/**
 	 * Get ID (key as String)
@@ -132,12 +121,11 @@ public final class KeyNamePair extends NamePair
 	 */
 	@Override
 	@JsonIgnore
-	public String getID()
-	{
+	public String getID() {
 		if (m_key == -1)
 			return null;
 		return String.valueOf(m_key);
-	}	// getID
+	} // getID
 
 	/**
 	 * Equals
@@ -146,16 +134,13 @@ public final class KeyNamePair extends NamePair
 	 * @return true if equal
 	 */
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
 
-		if (obj instanceof KeyNamePair)
-		{
-			KeyNamePair pp = (KeyNamePair)obj;
+		if (obj instanceof KeyNamePair) {
+			KeyNamePair pp = (KeyNamePair) obj;
 			if (pp.getKey() == m_key
 					&& pp.getName() != null
 					&& pp.getName().equals(getName()))
@@ -163,11 +148,10 @@ public final class KeyNamePair extends NamePair
 			return false;
 		}
 		return false;
-	}	// equals
+	} // equals
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return Objects.hash(m_key);
 	}
 }

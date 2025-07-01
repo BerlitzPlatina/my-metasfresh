@@ -91,14 +91,12 @@ import static org.junit.Assert.assertThat;
  * #L%
  */
 
-public class C_OrderLine_Handler_Test extends AbstractICTestSupport
-{
+public class C_OrderLine_Handler_Test extends AbstractICTestSupport {
 	private C_OrderLine_Handler orderLineHandler;
 	private final IAggregationKeyBuilder<I_C_Invoice_Candidate> headerAggregationKeyBuilder = new HeaderAggregationKeyBuilder();
 
 	@Before
-	public void init()
-	{
+	public void init() {
 		AdempiereTestHelper.get().forceStaticInit();
 
 		initStuff();
@@ -133,8 +131,7 @@ public class C_OrderLine_Handler_Test extends AbstractICTestSupport
 		Services.registerService(IBPartnerBL.class, new BPartnerBL(new UserRepository()));
 	}
 
-	private BPartnerLocationAndCaptureId createBPartnerAndLocation()
-	{
+	private BPartnerLocationAndCaptureId createBPartnerAndLocation() {
 		final org.compiere.model.I_C_BPartner bpartner = BusinessTestHelper.createBPartner("Test1");
 
 		final LocationId locationId = createLocation();
@@ -149,16 +146,14 @@ public class C_OrderLine_Handler_Test extends AbstractICTestSupport
 		return BPartnerLocationAndCaptureId.ofRecord(bpl);
 	}
 
-	private LocationId createLocation()
-	{
+	private LocationId createLocation() {
 		final I_C_Location location = newInstance(I_C_Location.class);
 		saveRecord(location);
 		return LocationId.ofRepoId(location.getC_Location_ID());
 	}
 
 	@Test
-	public void testSimilarAggregationKeys()
-	{
+	public void testSimilarAggregationKeys() {
 		final BPartnerLocationAndCaptureId bpartnerAndLocationId = createBPartnerAndLocation();
 
 		final I_C_OrderLine orderLine1;
@@ -210,8 +205,12 @@ public class C_OrderLine_Handler_Test extends AbstractICTestSupport
 
 		final LockOwner lockOwner = LockOwner.newOwner(getClass().getSimpleName() + "#generateInvoiceCandidates");
 
-		final List<I_C_Invoice_Candidate> iCands1 = orderLineHandler.createCandidatesFor(InvoiceCandidateGenerateRequest.of(orderLineHandler, orderLine1, lockOwner)).getC_Invoice_Candidates();
-		final List<I_C_Invoice_Candidate> iCands2 = orderLineHandler.createCandidatesFor(InvoiceCandidateGenerateRequest.of(orderLineHandler, orderLine2, lockOwner)).getC_Invoice_Candidates();
+		final List<I_C_Invoice_Candidate> iCands1 = orderLineHandler
+				.createCandidatesFor(InvoiceCandidateGenerateRequest.of(orderLineHandler, orderLine1, lockOwner))
+				.getC_Invoice_Candidates();
+		final List<I_C_Invoice_Candidate> iCands2 = orderLineHandler
+				.createCandidatesFor(InvoiceCandidateGenerateRequest.of(orderLineHandler, orderLine2, lockOwner))
+				.getC_Invoice_Candidates();
 
 		updateInvalidCandidates();
 
@@ -234,8 +233,7 @@ public class C_OrderLine_Handler_Test extends AbstractICTestSupport
 		Assertions.assertThat(key2).isEqualTo(key1);
 	}
 
-	private void setUpActivityAndTaxRetrieval(final I_C_Order order1, final I_C_OrderLine oL1)
-	{
+	private void setUpActivityAndTaxRetrieval(final I_C_Order order1, final I_C_OrderLine oL1) {
 		IProductActivityProvider productActivityProvider = Mockito.mock(IProductActivityProvider.class);
 		ITaxBL taxBL = Mockito.mock(ITaxBL.class);
 
@@ -255,15 +253,15 @@ public class C_OrderLine_Handler_Test extends AbstractICTestSupport
 						order1.getDatePromised(),
 						OrgId.ofRepoId(order1.getAD_Org_ID()),
 						WarehouseId.ofRepoId(order1.getM_Warehouse_ID()),
-						BPartnerLocationAndCaptureId.ofRepoId(order1.getC_BPartner_ID(), order1.getC_BPartner_Location_ID(), order1.getC_BPartner_Location_Value_ID()),
+						BPartnerLocationAndCaptureId.ofRepoId(order1.getC_BPartner_ID(),
+								order1.getC_BPartner_Location_ID(), order1.getC_BPartner_Location_Value_ID()),
 						SOTrx.ofBoolean(order1.isSOTrx()),
 						null))
 				.thenReturn(TaxId.ofRepoId(3));
 	}
 
 	@Test
-	public void testCreateMissingCandidates()
-	{
+	public void testCreateMissingCandidates() {
 		final I_C_DocType auftrag = docType(DocBaseType.SalesOrder, null);
 		save(auftrag);
 
@@ -380,7 +378,8 @@ public class C_OrderLine_Handler_Test extends AbstractICTestSupport
 
 		setUpActivityAndTaxRetrieval(order4, oL4);
 
-		final List<I_C_Invoice_Candidate> candidates = InvoiceCandidatesTestHelper.createMissingCandidates(orderLineHandler, QueryLimit.ofInt(5));
+		final List<I_C_Invoice_Candidate> candidates = InvoiceCandidatesTestHelper
+				.createMissingCandidates(orderLineHandler, QueryLimit.ofInt(5));
 
 		Assertions.assertThat(candidates).hasSize(2);
 
@@ -391,19 +390,18 @@ public class C_OrderLine_Handler_Test extends AbstractICTestSupport
 		Assertions.assertThat(!cand2.isSOTrx()).isEqualTo(cand1.isSOTrx());
 
 		// Check that the candidates are for the correct order lines
-		Assertions.assertThat(cand1.isSOTrx() ? cand1.getC_OrderLine_ID() == oL1.getC_OrderLine_ID() : cand2.getC_OrderLine_ID() == oL1.getC_OrderLine_ID()).isTrue();
-		Assertions.assertThat(cand2.isSOTrx() ? cand1.getC_OrderLine_ID() == oL2.getC_OrderLine_ID() : cand2.getC_OrderLine_ID() == oL2.getC_OrderLine_ID()).isTrue();
+		Assertions.assertThat(cand1.isSOTrx() ? cand1.getC_OrderLine_ID() == oL1.getC_OrderLine_ID()
+				: cand2.getC_OrderLine_ID() == oL1.getC_OrderLine_ID()).isTrue();
+		Assertions.assertThat(cand2.isSOTrx() ? cand1.getC_OrderLine_ID() == oL2.getC_OrderLine_ID()
+				: cand2.getC_OrderLine_ID() == oL2.getC_OrderLine_ID()).isTrue();
 	}
 
-
 	@Test
-	public void test_createCandidatesFor_Order_WithProject()
-	{
+	public void test_createCandidatesFor_Order_WithProject() {
 		createCandidatesFor_Order_WithProject(11);
 	}
 
-	private void createCandidatesFor_Order_WithProject(@Nullable final int c_project_id)
-	{
+	private void createCandidatesFor_Order_WithProject(@Nullable final Integer c_project_id) {
 		final BPartnerLocationAndCaptureId bpartnerAndLocationId = createBPartnerAndLocation();
 
 		final I_C_OrderLine orderLine1;
@@ -435,7 +433,8 @@ public class C_OrderLine_Handler_Test extends AbstractICTestSupport
 
 		final LockOwner lockOwner = LockOwner.newOwner(getClass().getSimpleName() + "#generateInvoiceCandidates");
 
-		final InvoiceCandidateGenerateResult invoiceCandidates = orderLineHandler.createCandidatesFor(InvoiceCandidateGenerateRequest.of(orderLineHandler, orderLine1, lockOwner));
+		final InvoiceCandidateGenerateResult invoiceCandidates = orderLineHandler
+				.createCandidatesFor(InvoiceCandidateGenerateRequest.of(orderLineHandler, orderLine1, lockOwner));
 
 		assertThat(invoiceCandidates.getC_Invoice_Candidates().size()).isEqualTo(1);
 
@@ -445,14 +444,12 @@ public class C_OrderLine_Handler_Test extends AbstractICTestSupport
 	}
 
 	@Test
-	public void test_PresetDateInvoiced()
-	{
+	public void test_PresetDateInvoiced() {
 		test_PresetDateInvoiced(null);
 		test_PresetDateInvoiced(LocalDate.of(2019, Month.SEPTEMBER, 1));
 	}
 
-	private void test_PresetDateInvoiced(@Nullable final LocalDate presetDateInvoiced)
-	{
+	private void test_PresetDateInvoiced(@Nullable final LocalDate presetDateInvoiced) {
 		final BPartnerLocationAndCaptureId bpartnerAndLocationId = createBPartnerAndLocation();
 
 		final I_C_OrderLine orderLine1;
@@ -481,7 +478,8 @@ public class C_OrderLine_Handler_Test extends AbstractICTestSupport
 
 		final LockOwner lockOwner = LockOwner.newOwner(getClass().getSimpleName() + "#generateInvoiceCandidates");
 
-		final InvoiceCandidateGenerateResult invoiceCandidates = orderLineHandler.createCandidatesFor(InvoiceCandidateGenerateRequest.of(orderLineHandler, orderLine1, lockOwner));
+		final InvoiceCandidateGenerateResult invoiceCandidates = orderLineHandler
+				.createCandidatesFor(InvoiceCandidateGenerateRequest.of(orderLineHandler, orderLine1, lockOwner));
 		final I_C_Invoice_Candidate invoiceCandidate = invoiceCandidates.getC_Invoice_Candidates().get(0);
 
 		assertThat(invoiceCandidate.getPresetDateInvoiced())
@@ -490,8 +488,7 @@ public class C_OrderLine_Handler_Test extends AbstractICTestSupport
 	}
 
 	@Test
-	public void testWithDifferentCapturedLocation()
-	{
+	public void testWithDifferentCapturedLocation() {
 		final BPartnerLocationAndCaptureId bpartnerAndLocationId = createBPartnerAndLocation();
 		final LocationId differentLocationId = createLocation();
 
@@ -522,7 +519,9 @@ public class C_OrderLine_Handler_Test extends AbstractICTestSupport
 
 		final LockOwner lockOwner = LockOwner.newOwner(getClass().getSimpleName() + "#generateInvoiceCandidates");
 
-		final List<I_C_Invoice_Candidate> ics = orderLineHandler.createCandidatesFor(InvoiceCandidateGenerateRequest.of(orderLineHandler, orderLine1, lockOwner)).getC_Invoice_Candidates();
+		final List<I_C_Invoice_Candidate> ics = orderLineHandler
+				.createCandidatesFor(InvoiceCandidateGenerateRequest.of(orderLineHandler, orderLine1, lockOwner))
+				.getC_Invoice_Candidates();
 
 		assertThat(ics).hasSize(1);
 		final I_C_Invoice_Candidate ic = ics.get(0);

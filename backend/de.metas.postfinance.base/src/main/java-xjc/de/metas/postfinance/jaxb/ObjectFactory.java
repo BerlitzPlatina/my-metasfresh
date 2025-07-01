@@ -1,14 +1,14 @@
 
 package de.metas.postfinance.jaxb;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 
 
 /**
@@ -131,6 +131,8 @@ public class ObjectFactory {
     private final static QName _SearchInvoicesResponse2InvoiceList_QNAME = new QName("http://swisspost_ch.ebs.ebill.b2bservice", "InvoiceList");
     private final static QName _SearchInvoiceParameterEBillAccountID_QNAME = new QName("http://swisspost_ch.ebs.ebill.b2bservice", "eBillAccountID");
     private final static QName _SearchInvoiceParameterState_QNAME = new QName("http://swisspost_ch.ebs.ebill.b2bservice", "State");
+    private final static QName _SearchInvoiceParameterDeliveryDateFrom_QNAME = new QName("http://swisspost_ch.ebs.ebill.b2bservice", "DeliveryDateFrom");
+    private final static QName _SearchInvoiceParameterDeliveryDateTo_QNAME = new QName("http://swisspost_ch.ebs.ebill.b2bservice", "DeliveryDateTo");
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: de.metas.postfinance.jaxb
@@ -2190,6 +2192,32 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://swisspost_ch.ebs.ebill.b2bservice", name = "State", scope = SearchInvoiceParameter.class)
     public JAXBElement<State> createSearchInvoiceParameterState(State value) {
         return new JAXBElement<State>(_SearchInvoiceParameterState_QNAME, State.class, SearchInvoiceParameter.class, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link XMLGregorianCalendar }{@code >}
+     * 
+     * @param value
+     *     Java instance representing xml element's value.
+     * @return
+     *     the new instance of {@link JAXBElement }{@code <}{@link XMLGregorianCalendar }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://swisspost_ch.ebs.ebill.b2bservice", name = "DeliveryDateFrom", scope = SearchInvoiceParameter.class)
+    public JAXBElement<XMLGregorianCalendar> createSearchInvoiceParameterDeliveryDateFrom(XMLGregorianCalendar value) {
+        return new JAXBElement<XMLGregorianCalendar>(_SearchInvoiceParameterDeliveryDateFrom_QNAME, XMLGregorianCalendar.class, SearchInvoiceParameter.class, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link XMLGregorianCalendar }{@code >}
+     * 
+     * @param value
+     *     Java instance representing xml element's value.
+     * @return
+     *     the new instance of {@link JAXBElement }{@code <}{@link XMLGregorianCalendar }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://swisspost_ch.ebs.ebill.b2bservice", name = "DeliveryDateTo", scope = SearchInvoiceParameter.class)
+    public JAXBElement<XMLGregorianCalendar> createSearchInvoiceParameterDeliveryDateTo(XMLGregorianCalendar value) {
+        return new JAXBElement<XMLGregorianCalendar>(_SearchInvoiceParameterDeliveryDateTo_QNAME, XMLGregorianCalendar.class, SearchInvoiceParameter.class, value);
     }
 
 }

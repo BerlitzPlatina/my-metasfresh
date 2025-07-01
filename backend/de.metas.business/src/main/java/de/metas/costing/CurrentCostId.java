@@ -34,45 +34,37 @@ import lombok.Value;
  */
 
 @Value
-public class CurrentCostId implements RepoIdAware
-{
+public class CurrentCostId implements RepoIdAware {
 	@JsonCreator
-	public static CurrentCostId ofRepoId(final int repoId)
-	{
+	public static CurrentCostId ofRepoId(final int repoId) {
 		return new CurrentCostId(repoId);
 	}
 
-	public static CurrentCostId ofRepoIdOrNull(@Nullable final Integer repoId)
-	{
+	public static CurrentCostId ofRepoIdOrNull(@Nullable final Integer repoId) {
 		return repoId != null && repoId > 0 ? new CurrentCostId(repoId) : null;
 	}
 
-	public static CurrentCostId ofRepoIdOrNull(@Nullable final int repoId)
-	{
+	public static CurrentCostId ofRepoIdOrNull(final int repoId) {
 		return repoId > 0 ? new CurrentCostId(repoId) : null;
 	}
 
-	public static int toRepoId(final CurrentCostId id)
-	{
+	public static int toRepoId(final CurrentCostId id) {
 		return id != null ? id.getRepoId() : -1;
 	}
 
-	public static boolean equals(final CurrentCostId o1, final CurrentCostId o2)
-	{
+	public static boolean equals(final CurrentCostId o1, final CurrentCostId o2) {
 		return Objects.equals(o1, o2);
 	}
 
 	int repoId;
 
-	private CurrentCostId(final int repoId)
-	{
+	private CurrentCostId(final int repoId) {
 		this.repoId = Check.assumeGreaterThanZero(repoId, "M_Cost_ID");
 	}
 
 	@Override
 	@JsonValue
-	public int getRepoId()
-	{
+	public int getRepoId() {
 		return repoId;
 	}
 }

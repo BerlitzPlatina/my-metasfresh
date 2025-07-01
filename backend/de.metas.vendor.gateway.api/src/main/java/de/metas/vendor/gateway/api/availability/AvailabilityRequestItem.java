@@ -30,8 +30,7 @@ import lombok.Value;
  */
 
 @Value
-public class AvailabilityRequestItem
-{
+public class AvailabilityRequestItem {
 	TrackingId trackingId;
 	ProductAndQuantity productAndQuantity;
 	int salesOrderLineId;
@@ -41,9 +40,8 @@ public class AvailabilityRequestItem
 	private AvailabilityRequestItem(
 			final TrackingId trackingId,
 			@NonNull final ProductAndQuantity productAndQuantity,
-			@Nullable final int salesOrderLineId,
-			final int purchaseCandidateId)
-	{
+			@Nullable final Integer salesOrderLineId,
+			final int purchaseCandidateId) {
 		this.trackingId = trackingId != null ? trackingId : TrackingId.random();
 		this.productAndQuantity = productAndQuantity;
 		this.salesOrderLineId = salesOrderLineId > 0 ? salesOrderLineId : -1;

@@ -32,30 +32,25 @@ import lombok.Value;
  */
 
 @Value
-public class DunningId implements RepoIdAware
-{
+public class DunningId implements RepoIdAware {
 	@JsonCreator
-	public static DunningId ofRepoId(final int repoId)
-	{
+	public static DunningId ofRepoId(final int repoId) {
 		return new DunningId(repoId);
 	}
 
-	public static DunningId ofRepoIdOrNull(@Nullable final int repoId)
-	{
+	public static DunningId ofRepoIdOrNull(@Nullable final Integer repoId) {
 		return repoId > 0 ? ofRepoId(repoId) : null;
 	}
 
 	int repoId;
 
-	private DunningId(final int repoId)
-	{
+	private DunningId(final int repoId) {
 		this.repoId = Check.assumeGreaterThanZero(repoId, "repoId");
 	}
 
 	@Override
 	@JsonValue
-	public int getRepoId()
-	{
+	public int getRepoId() {
 		return repoId;
 	}
 }

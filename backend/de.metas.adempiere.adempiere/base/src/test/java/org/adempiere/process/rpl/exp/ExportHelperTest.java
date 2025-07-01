@@ -34,30 +34,27 @@ import static org.adempiere.model.InterfaceWrapperHelper.newInstance;
 import static org.adempiere.model.InterfaceWrapperHelper.saveRecord;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ExportHelperTest
-{
+class ExportHelperTest {
 	@BeforeEach
-	void beforeEach()
-	{
+	void beforeEach() {
 		AdempiereTestHelper.get().init();
 		AdempiereTestHelper.createOrgWithTimeZone();
 
-		SystemTime.setTimeSource(() -> 1597126895000L/*Tue, 11 Aug 2020 06:21:35 GMT*/);
+		SystemTime.setTimeSource(() -> 1597126895000L/* Tue, 11 Aug 2020 06:21:35 GMT */);
 	}
 
 	@Test
-	void encodeDate()
-	{
+	void encodeDate() {
 		// when
-		final String result = ExportHelper.encodeDate(de.metas.common.util.time.SystemTime.asTimestamp(), DisplayType.DateTime);
+		final String result = ExportHelper.encodeDate(de.metas.common.util.time.SystemTime.asTimestamp(),
+				DisplayType.DateTime);
 
 		// then
 		assertThat(result).isEqualTo("2020-08-11T08:21:35+02:00");
 	}
 
 	@NonNull
-	private I_EXP_FormatLine setupFormatLine()
-	{
+	private I_EXP_FormatLine setupFormatLine() {
 		final I_EXP_FormatLine formatLine = newInstance(I_EXP_FormatLine.class);
 		saveRecord(formatLine);
 		return formatLine;

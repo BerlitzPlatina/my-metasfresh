@@ -33,30 +33,25 @@ import lombok.Value;
  */
 
 @Value
-public class InventoryLineHUId implements RepoIdAware
-{
+public class InventoryLineHUId implements RepoIdAware {
 	@JsonCreator
-	public static InventoryLineHUId ofRepoId(int repoId)
-	{
+	public static InventoryLineHUId ofRepoId(int repoId) {
 		return new InventoryLineHUId(repoId);
 	}
 
-	public static InventoryLineHUId ofRepoIdOrNull(@Nullable final int repoId)
-	{
+	public static InventoryLineHUId ofRepoIdOrNull(@Nullable final Integer repoId) {
 		return repoId > 0 ? ofRepoId(repoId) : null;
 	}
 
 	int repoId;
 
-	private InventoryLineHUId(int repoId)
-	{
+	private InventoryLineHUId(int repoId) {
 		this.repoId = assumeGreaterThanZero(repoId, "M_InventoryLine_HU_ID");
 	}
 
 	@Override
 	@JsonValue
-	public int getRepoId()
-	{
+	public int getRepoId() {
 		return repoId;
 	}
 }

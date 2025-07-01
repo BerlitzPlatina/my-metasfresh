@@ -37,39 +37,32 @@ import lombok.Value;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 @Value
-public class FreightCostShipperId implements RepoIdAware
-{
+public class FreightCostShipperId implements RepoIdAware {
 	int repoId;
 
 	@JsonCreator
-	public static FreightCostShipperId ofRepoId(final int repoId)
-	{
+	public static FreightCostShipperId ofRepoId(final int repoId) {
 		return new FreightCostShipperId(repoId);
 	}
 
-	public static FreightCostShipperId ofRepoIdOrNull(@Nullable final int repoId)
-	{
+	public static FreightCostShipperId ofRepoIdOrNull(@Nullable final Integer repoId) {
 		return repoId > 0 ? new FreightCostShipperId(repoId) : null;
 	}
 
-	public static int toRepoId(final FreightCostShipperId id)
-	{
+	public static int toRepoId(final FreightCostShipperId id) {
 		return id != null ? id.getRepoId() : -1;
 	}
 
-	private FreightCostShipperId(final int repoId)
-	{
+	private FreightCostShipperId(final int repoId) {
 		this.repoId = Check.assumeGreaterThanZero(repoId, "M_FreightCostShipper_ID");
 	}
 
 	@JsonValue
-	public int toJson()
-	{
+	public int toJson() {
 		return getRepoId();
 	}
 
-	public static boolean equals(final FreightCostShipperId id1, final FreightCostShipperId id2)
-	{
+	public static boolean equals(final FreightCostShipperId id1, final FreightCostShipperId id2) {
 		return Objects.equals(id1, id2);
 	}
 }

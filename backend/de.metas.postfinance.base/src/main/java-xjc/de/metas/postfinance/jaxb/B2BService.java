@@ -270,7 +270,7 @@ public interface B2BService {
         @WebParam(name = "BillerID", targetNamespace = "http://ch.swisspost.ebill.b2bservice")
         String billerID,
         @WebParam(name = "CreateDate", targetNamespace = "http://ch.swisspost.ebill.b2bservice")
-        String createDate,
+        XMLGregorianCalendar createDate,
         @WebParam(name = "FileType", targetNamespace = "http://ch.swisspost.ebill.b2bservice")
         String fileType);
 

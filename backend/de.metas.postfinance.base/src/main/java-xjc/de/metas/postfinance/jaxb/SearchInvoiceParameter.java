@@ -1,6 +1,7 @@
 
 package de.metas.postfinance.jaxb;
 
+import java.math.BigDecimal;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -9,7 +10,6 @@ import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
-import java.math.BigDecimal;
 
 
 /**
@@ -67,12 +67,10 @@ public class SearchInvoiceParameter {
     protected BigDecimal amountTo;
     @XmlElementRef(name = "State", namespace = "http://swisspost_ch.ebs.ebill.b2bservice", type = JAXBElement.class, required = false)
     protected JAXBElement<State> state;
-    @XmlElement(name = "DeliveryDateFrom")
-    @XmlSchemaType(name = "dateTime")
-    protected XMLGregorianCalendar deliveryDateFrom;
-    @XmlElement(name = "DeliveryDateTo")
-    @XmlSchemaType(name = "dateTime")
-    protected XMLGregorianCalendar deliveryDateTo;
+    @XmlElementRef(name = "DeliveryDateFrom", namespace = "http://swisspost_ch.ebs.ebill.b2bservice", type = JAXBElement.class, required = false)
+    protected JAXBElement<XMLGregorianCalendar> deliveryDateFrom;
+    @XmlElementRef(name = "DeliveryDateTo", namespace = "http://swisspost_ch.ebs.ebill.b2bservice", type = JAXBElement.class, required = false)
+    protected JAXBElement<XMLGregorianCalendar> deliveryDateTo;
     @XmlElement(name = "PaymentDueDateFrom")
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar paymentDueDateFrom;
@@ -229,10 +227,10 @@ public class SearchInvoiceParameter {
      * 
      * @return
      *     possible object is
-     *     {@link XMLGregorianCalendar }
+     *     {@link JAXBElement }{@code <}{@link XMLGregorianCalendar }{@code >}
      *     
      */
-    public XMLGregorianCalendar getDeliveryDateFrom() {
+    public JAXBElement<XMLGregorianCalendar> getDeliveryDateFrom() {
         return deliveryDateFrom;
     }
 
@@ -241,10 +239,10 @@ public class SearchInvoiceParameter {
      * 
      * @param value
      *     allowed object is
-     *     {@link XMLGregorianCalendar }
+     *     {@link JAXBElement }{@code <}{@link XMLGregorianCalendar }{@code >}
      *     
      */
-    public void setDeliveryDateFrom(XMLGregorianCalendar value) {
+    public void setDeliveryDateFrom(JAXBElement<XMLGregorianCalendar> value) {
         this.deliveryDateFrom = value;
     }
 
@@ -253,10 +251,10 @@ public class SearchInvoiceParameter {
      * 
      * @return
      *     possible object is
-     *     {@link XMLGregorianCalendar }
+     *     {@link JAXBElement }{@code <}{@link XMLGregorianCalendar }{@code >}
      *     
      */
-    public XMLGregorianCalendar getDeliveryDateTo() {
+    public JAXBElement<XMLGregorianCalendar> getDeliveryDateTo() {
         return deliveryDateTo;
     }
 
@@ -265,10 +263,10 @@ public class SearchInvoiceParameter {
      * 
      * @param value
      *     allowed object is
-     *     {@link XMLGregorianCalendar }
+     *     {@link JAXBElement }{@code <}{@link XMLGregorianCalendar }{@code >}
      *     
      */
-    public void setDeliveryDateTo(XMLGregorianCalendar value) {
+    public void setDeliveryDateTo(JAXBElement<XMLGregorianCalendar> value) {
         this.deliveryDateTo = value;
     }
 

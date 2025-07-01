@@ -23,7 +23,6 @@
 package de.metas.util;
 
 import com.google.common.collect.ImmutableList;
-import lombok.Builder;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -32,12 +31,13 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Value;
 
-public class StreamUtilsTests
-{
+public class StreamUtilsTests {
 	@Test
-	public void dice_emptyStream()
-	{
+	public void dice_emptyStream() {
 		final List<List<Object>> chunks = StreamUtils.dice(Stream.empty(), 10)
 				.collect(ImmutableList.toImmutableList());
 
@@ -45,8 +45,7 @@ public class StreamUtilsTests
 	}
 
 	@Test
-	public void dice_oneItemStream()
-	{
+	public void dice_oneItemStream() {
 		final List<List<Integer>> chunks = StreamUtils.dice(Stream.of(123), 10)
 				.collect(ImmutableList.toImmutableList());
 
@@ -56,8 +55,7 @@ public class StreamUtilsTests
 	}
 
 	@Test
-	public void dice_1to57_10itemsPerChunk()
-	{
+	public void dice_1to57_10itemsPerChunk() {
 		final List<List<Integer>> chunks = StreamUtils.dice(intRangeAsList(1, 57).stream(), 10)
 				.collect(ImmutableList.toImmutableList());
 
@@ -72,8 +70,7 @@ public class StreamUtilsTests
 	}
 
 	@Test
-	public void dice_1to10_10itemsPerChunk()
-	{
+	public void dice_1to10_10itemsPerChunk() {
 		final List<List<Integer>> chunks = StreamUtils.dice(intRangeAsList(1, 10).stream(), 10)
 				.collect(ImmutableList.toImmutableList());
 
@@ -82,8 +79,7 @@ public class StreamUtilsTests
 	}
 
 	@Test
-	public void dice_1to20_10itemsPerChunk()
-	{
+	public void dice_1to20_10itemsPerChunk() {
 		final List<List<Integer>> chunks = StreamUtils.dice(intRangeAsList(1, 20).stream(), 10)
 				.collect(ImmutableList.toImmutableList());
 
@@ -93,14 +89,12 @@ public class StreamUtilsTests
 						intRangeAsList(11, 20)));
 	}
 
-	private static List<Integer> intRangeAsList(final int startInclusive, final int endInclusive)
-	{
+	private static List<Integer> intRangeAsList(final int startInclusive, final int endInclusive) {
 		return IntStream.rangeClosed(startInclusive, endInclusive).boxed().collect(ImmutableList.toImmutableList());
 	}
 
 	@Test
-	public void dice_with_aggregation()
-	{
+	public void dice_with_aggregation() {
 		final List<TestObject> list = new ArrayList<>();
 		list.addAll(getTestObjectList(0, 1, 5));
 		list.addAll(getTestObjectList(0, 2, 7));
@@ -112,26 +106,21 @@ public class StreamUtilsTests
 		assertThat(chunks).containsExactly(
 				concat(getTestObjectList(0, 1, 5), getTestObjectList(0, 2, 5)),
 				getTestObjectList(0, 2, 2),
-				getTestObjectList(1, 0, 10)
-		);
+				getTestObjectList(1, 0, 10));
 	}
 
-	private List<TestObject> getTestObjectList(final int element1, final int element2, final int count)
-	{
+	private List<TestObject> getTestObjectList(final int element1, final int element2, final int count) {
 		final List<TestObject> list = new ArrayList<>();
-		for (int i = 1; i <= count; i++)
-		{
+		for (int i = 1; i <= count; i++) {
 			list.add(TestObject.builder()
 					.element1(element1)
 					.element2(element2)
-					.build()
-			);
+					.build());
 		}
 		return list;
 	}
 
-	private static <T> List<T> concat(final List<T> list1, final List<T> list2)
-	{
+	private static <T> List<T> concat(final List<T> list1, final List<T> list2) {
 		final List<T> list = new ArrayList<>();
 		list.addAll(list1);
 		list.addAll(list2);
@@ -139,5 +128,19 @@ public class StreamUtilsTests
 	}
 
 	@Builder
-	private record TestObject(int element1, int element2) {}
+	@Value
+	@EqualsAndHashCode
+	private static class TestObject {
+		private final int element1;
+		private final int element2;
+
+		// Optionally, you can add getters if needed
+		public int element1() {
+			return element1;
+		}
+
+		public int element2() {
+			return element2;
+		}
+	}
 }

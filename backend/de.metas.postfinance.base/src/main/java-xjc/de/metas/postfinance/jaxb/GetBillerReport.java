@@ -5,7 +5,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 
 /**
@@ -19,7 +21,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
  *         &lt;element name="BillerID" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
- *         &lt;element name="CreateDate" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="CreateDate" type="{http://www.w3.org/2001/XMLSchema}dateTime"/&gt;
  *         &lt;element name="FileType" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
@@ -40,8 +42,9 @@ public class GetBillerReport {
 
     @XmlElement(name = "BillerID", required = true, nillable = true)
     protected String billerID;
-    @XmlElement(name = "CreateDate", required = true, nillable = true)
-    protected String createDate;
+    @XmlElement(name = "CreateDate", required = true)
+    @XmlSchemaType(name = "dateTime")
+    protected XMLGregorianCalendar createDate;
     @XmlElement(name = "FileType", required = true, nillable = true)
     protected String fileType;
 
@@ -74,10 +77,10 @@ public class GetBillerReport {
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link XMLGregorianCalendar }
      *     
      */
-    public String getCreateDate() {
+    public XMLGregorianCalendar getCreateDate() {
         return createDate;
     }
 
@@ -86,10 +89,10 @@ public class GetBillerReport {
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link XMLGregorianCalendar }
      *     
      */
-    public void setCreateDate(String value) {
+    public void setCreateDate(XMLGregorianCalendar value) {
         this.createDate = value;
     }
 

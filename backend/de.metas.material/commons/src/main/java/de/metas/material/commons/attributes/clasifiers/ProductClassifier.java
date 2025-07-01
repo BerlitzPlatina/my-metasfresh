@@ -29,15 +29,12 @@ import lombok.EqualsAndHashCode;
 import javax.annotation.Nullable;
 
 @EqualsAndHashCode(doNotUseGetters = true)
-public final class ProductClassifier
-{
-	public static ProductClassifier any()
-	{
+public final class ProductClassifier {
+	public static ProductClassifier any() {
 		return ANY;
 	}
 
-	public static ProductClassifier specific(final int productId)
-	{
+	public static ProductClassifier specific(final int productId) {
 		Check.assumeGreaterThanZero(productId, "productId");
 		return new ProductClassifier(productId);
 	}
@@ -46,32 +43,27 @@ public final class ProductClassifier
 
 	private int productId;
 
-	private ProductClassifier(final int productId)
-	{
+	private ProductClassifier(final int productId) {
 		this.productId = productId > 0 ? productId : -1;
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return MoreObjects.toStringHelper(this)
 				.addValue(productId > 0 ? productId : "ANY")
 				.toString();
 	}
 
-	public boolean isMatching(@Nullable final int productId)
-	{
+	public boolean isMatching(@Nullable final Integer productId) {
 		return this.productId <= 0
 				|| this.productId == productId;
 	}
 
-	public boolean isAny()
-	{
+	public boolean isAny() {
 		return this.productId <= 0;
 	}
 
-	public int getProductId()
-	{
+	public int getProductId() {
 		return productId;
 	}
 }

@@ -32,35 +32,29 @@ import lombok.Value;
  */
 
 @Value
-public class ShipmentDeclarationId implements RepoIdAware
-{
+public class ShipmentDeclarationId implements RepoIdAware {
 	@JsonCreator
-	public static ShipmentDeclarationId ofRepoId(final int repoId)
-	{
+	public static ShipmentDeclarationId ofRepoId(final int repoId) {
 		return new ShipmentDeclarationId(repoId);
 	}
 
-	public static ShipmentDeclarationId ofRepoIdOrNull(@Nullable final int repoId)
-	{
+	public static ShipmentDeclarationId ofRepoIdOrNull(@Nullable final Integer repoId) {
 		return repoId > 0 ? ofRepoId(repoId) : null;
 	}
 
 	int repoId;
 
-	private ShipmentDeclarationId(final int repoId)
-	{
+	private ShipmentDeclarationId(final int repoId) {
 		this.repoId = Check.assumeGreaterThanZero(repoId, "M_Shipment_Declaration_ID");
 	}
 
 	@Override
 	@JsonValue
-	public int getRepoId()
-	{
+	public int getRepoId() {
 		return repoId;
 	}
 
-	public static int toRepoId(final ShipmentDeclarationId id)
-	{
+	public static int toRepoId(final ShipmentDeclarationId id) {
 		return id != null ? id.getRepoId() : -1;
 	}
 }
