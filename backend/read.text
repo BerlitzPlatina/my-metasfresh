@@ -2,5 +2,15 @@ mvn clean install -Duser.timezone=Europe/Berlin
 mvn clean install --offline -Dmaven.gitcommitid.skip=true -DskipTests
 mvn clean install -Dmaven.gitcommitid.skip=true -DskipTests
 
-
+make role postgres
+psql -U metasfresh -d postgres
+CREATE ROLE postgres WITH LOGIN SUPERUSER CREATEDB CREATEROLE PASSWORD 'postgres';
 pg_restore -U metasfresh -d metasfresh var/lib/postgresql/data/metasfresh-5_172.pgdump
+
+mvn spring-boot:run \
+  -Dspring-boot.run.jvmArguments="\
+  -Dspring.devtools.restart.exclude.de_metas_util=/de.metas.util-[\\w.-]+\.jar\
+  -Dspring.devtools.restart.exclude.de_metas_adempiere=/de.metas.adempiere.[\\w.-]+\.jar"
+
+  -Dspring.devtools.restart.enabled=false
+
