@@ -96,11 +96,11 @@
 			<artifactId>de.metas.postfinance.webui</artifactId>
 			<version>${metasfresh.version}</version>
 		</dependency>
-		<!-- <dependency>
+		<dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
-        </dependency> -->
+        </dependency>
 	</dependencies>
 
 	<build>

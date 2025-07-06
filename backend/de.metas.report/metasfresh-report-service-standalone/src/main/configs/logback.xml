@@ -29,8 +29,8 @@
 	</appender>
 
 	<!-- Error logger (AD_Issue) -->
-	<appender name="AD_ISSUE" class="de.metas.logging.MetasfreshIssueAppender">
-	</appender>
+	<!-- <appender name="AD_ISSUE" class="de.metas.logging.MetasfreshIssueAppender">
+	</appender> -->
 
 	<!--
 		https://metasfresh.atlassian.net/browse/FRESH-87 
@@ -55,7 +55,7 @@
 	<root level="INFO">
 		<appender-ref ref="CONSOLE" />
 		<appender-ref ref="FILE" />
-		<appender-ref ref="AD_ISSUE" />
+		<!-- <appender-ref ref="AD_ISSUE" /> -->
 	</root>
 	
 	<!-- see http://codecentric.github.io/spring-boot-admin/1.3.0/#loglevel-management -->

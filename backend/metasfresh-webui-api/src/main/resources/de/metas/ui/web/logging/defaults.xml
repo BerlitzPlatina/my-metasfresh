@@ -41,7 +41,7 @@
 	</appender>
 
 	<!-- Error logger (AD_Issue) -->
-	<appender name="AD_ISSUE" class="de.metas.logging.MetasfreshIssueAppender" />
+	<!-- <appender name="AD_ISSUE" class="de.metas.logging.MetasfreshIssueAppender" /> -->
 
 	<!-- https://metasfresh.atlassian.net/browse/FRESH-87 logging inbound and 
 		outbound CXF messages -->
@@ -68,7 +68,7 @@
 	<root level="INFO">
 		<appender-ref ref="CONSOLE" />
 		<appender-ref ref="FILE" />
-		<appender-ref ref="AD_ISSUE" />
+		<!-- <appender-ref ref="AD_ISSUE" /> -->
 
 		<!-- Log to separate files by RemoteAddr, LoggedUser -->
 		<!-- appender-ref ref="FILE-byRemoteAddr" / -->
