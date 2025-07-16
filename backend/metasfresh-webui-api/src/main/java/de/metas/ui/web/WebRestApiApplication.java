@@ -188,5 +188,17 @@ public class WebRestApiApplication {
 		if (Check.isBlank(System.getProperty(SYSTEM_PROPERTY_APP_NAME))) {
 			System.setProperty(SYSTEM_PROPERTY_APP_NAME, WebRestApiApplication.class.getSimpleName());
 		}
+		// System.setProperty("logging.level.de.metas", "DEBUG");
+		// System.setProperty("logging.level.org.adempiere", "DEBUG");
+		// System.setProperty("logging.level.org.compiere", "DEBUG");
+		// System.setProperty("logging.level.org.springframework.jdbc.core", "DEBUG");
+		// System.setProperty("logging.level.org.springframework.jdbc.datasource",
+		// "DEBUG");
+		// System.setProperty("logging.level.org.springframework.jdbc.support",
+		// "DEBUG");
+
+		// System.setProperty("spring.devtools.restart.enabled", "false");
+		// System.setProperty("spring.devtools.restart.exclude.adempiere",
+		// "de.metas.adempiere.adempiere.base-10.0.0.jar");
 	}
 }
