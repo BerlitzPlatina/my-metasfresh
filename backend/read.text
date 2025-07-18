@@ -1,3 +1,5 @@
+install trong folder misc
+folder này có nhiều thứ, docker,...
 mvn clean install -Duser.timezone=Europe/Berlin
 mvn clean install -Duser.timezone=Europe/Berlin -DskipTests
 mvn clean install --offline -Dmaven.gitcommitid.skip=true -DskipTests
