@@ -5,6 +5,8 @@ mvn clean install -Duser.timezone=Europe/Berlin -DskipTests
 mvn clean install --offline -Dmaven.gitcommitid.skip=true -DskipTests
 mvn clean install -Dmaven.gitcommitid.skip=true -DskipTests
 
+thế đéo nào dữ lieu install database lại ở trong meta-dist-dist, local.properties lại đặt trong file home
+
 make role postgres
 psql -U metasfresh -d postgres
 CREATE ROLE postgres WITH LOGIN SUPERUSER CREATEDB CREATEROLE PASSWORD 'postgres';
