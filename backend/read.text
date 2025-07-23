@@ -6,7 +6,10 @@ mvn clean install --offline -Dmaven.gitcommitid.skip=true -DskipTests
 mvn clean install -Dmaven.gitcommitid.skip=true -DskipTests
 
 thế đéo nào dữ lieu install database lại ở trong meta-dist-dist, local.properties lại đặt trong file home
-
+cách làm đúng cho import database:
+- backend/metasfresh-dist/dist/target
+- giải nén file zip
+- cd file giải nén, chạy command bash sql_remote.sql trong folder install
 make role postgres
 psql -U metasfresh -d postgres
 CREATE ROLE postgres WITH LOGIN SUPERUSER CREATEDB CREATEROLE PASSWORD 'postgres';
