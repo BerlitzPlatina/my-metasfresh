@@ -50,7 +50,8 @@ import java.util.Properties;
 /**
  * Internal {@link UserSession} data.
  * <p>
- * NOTE: it's here and not inside UserSession class because it seems spring could not discover it
+ * NOTE: it's here and not inside UserSession class because it seems spring
+ * could not discover it
  *
  * @author metas-dev <dev@metasfresh.com>
  */
@@ -58,12 +59,12 @@ import java.util.Properties;
 @Primary
 @SessionScope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 @lombok.Data
-		/* package */ class InternalUserSessionData implements Serializable
-{
+/* package */ public class InternalUserSessionData implements Serializable {
 	private static final long serialVersionUID = 4046535476486036184L;
 
 	// ---------------------------------------------------------------------------------------------
-	// NOTE: make sure none of those fields are "final" because this will prevent deserialization
+	// NOTE: make sure none of those fields are "final" because this will prevent
+	// deserialization
 	// ---------------------------------------------------------------------------------------------
 
 	//
@@ -97,14 +98,14 @@ import java.util.Properties;
 	private int defaultHttpCacheMaxAge;
 	private int httpCacheMaxAge;
 
-	// TODO: set default to "true" after https://github.com/metasfresh/metasfresh-webui-frontend/issues/819
+	// TODO: set default to "true" after
+	// https://github.com/metasfresh/metasfresh-webui-frontend/issues/819
 	@Value("${metasfresh.webui.http.use.AcceptLanguage:false}")
 	private boolean defaultUseHttpAcceptLanguage;
 	private boolean useHttpAcceptLanguage;
 
 	//
-	public InternalUserSessionData()
-	{
+	public InternalUserSessionData() {
 		final RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
 		sessionId = WebuiSessionId.ofNullableString(requestAttributes.getSessionId());
 
@@ -119,14 +120,10 @@ import java.util.Properties;
 		UserSession.logger.trace("User session created: {}", this);
 	}
 
-	void initializeIfNeeded()
-	{
-		if (!initialized)
-		{
-			synchronized (this)
-			{
-				if (!initialized)
-				{
+	void initializeIfNeeded() {
+		if (!initialized) {
+			synchronized (this) {
+				if (!initialized) {
 					initializeNow();
 					initialized = true;
 				}
@@ -134,8 +131,7 @@ import java.util.Properties;
 		}
 	}
 
-	private void initializeNow()
-	{
+	private void initializeNow() {
 		//
 		// Set initial properties
 		setShowColumnNamesForCaption(defaultShowColumnNamesForCaption);
@@ -145,25 +141,19 @@ import java.util.Properties;
 
 		//
 		// Set initial language
-		try
-		{
+		try {
 			final Language language = findInitialLanguage();
 			verifyLanguageAndSet(language);
-		}
-		catch (final Throwable ex)
-		{
+		} catch (final Throwable ex) {
 			UserSession.logger.warn("Failed setting the language, but moving on", ex);
 		}
 	}
 
-	private static Language findInitialLanguage()
-	{
+	private static Language findInitialLanguage() {
 		final Locale locale = LocaleContextHolder.getLocale();
-		if (locale != null)
-		{
+		if (locale != null) {
 			final Language language = Language.findLanguageByLocale(locale);
-			if (language != null)
-			{
+			if (language != null) {
 				return language;
 			}
 		}
@@ -172,8 +162,7 @@ import java.util.Properties;
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return MoreObjects.toStringHelper(this)
 				.omitNullValues()
 				.add("sessionId", sessionId)
@@ -184,80 +173,66 @@ import java.util.Properties;
 				.toString();
 	}
 
-	private void writeObject(final java.io.ObjectOutputStream out) throws IOException
-	{
+	private void writeObject(final java.io.ObjectOutputStream out) throws IOException {
 		out.defaultWriteObject();
 
 		UserSession.logger.trace("User session serialized: {}", this);
 	}
 
-	private void readObject(final java.io.ObjectInputStream in) throws IOException, ClassNotFoundException
-	{
+	private void readObject(final java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.defaultReadObject();
 
 		UserSession.logger.trace("User session deserialized: {}", this);
 	}
 
-	Properties getCtx()
-	{
+	Properties getCtx() {
 		return ctx;
 	}
 
-	public ClientId getClientId()
-	{
+	public ClientId getClientId() {
 		return Env.getClientId(getCtx());
 	}
 
-	public OrgId getOrgId()
-	{
+	public OrgId getOrgId() {
 		return Env.getOrgId(getCtx());
 	}
 
-	public String getOrgName()
-	{
+	public String getOrgName() {
 		return Env.getContext(getCtx(), Env.CTXNAME_AD_Org_Name);
 	}
 
-	public UserId getLoggedUserId()
-	{
+	public UserId getLoggedUserId() {
 		return Env.getLoggedUserId(getCtx());
 	}
 
-	public Optional<UserId> getLoggedUserIdIfExists()
-	{
+	public Optional<UserId> getLoggedUserIdIfExists() {
 		return Env.getLoggedUserIdIfExists(getCtx());
 	}
 
-	public RoleId getLoggedRoleId()
-	{
+	public RoleId getLoggedRoleId() {
 		return Env.getLoggedRoleId(getCtx());
 	}
 
-	public String getUserName()
-	{
+	public String getUserName() {
 		return Env.getContext(getCtx(), Env.CTXNAME_AD_User_Name);
 	}
 
-	public String getRoleName()
-	{
+	public String getRoleName() {
 		return Env.getContext(getCtx(), Env.CTXNAME_AD_Role_Name);
 	}
 
-	String getAdLanguage()
-	{
+	String getAdLanguage() {
 		return Env.getContext(getCtx(), Env.CTXNAME_AD_Language);
 	}
 
-	Language getLanguage()
-	{
+	Language getLanguage() {
 		return Env.getLanguage(getCtx());
 	}
 
 	/**
 	 * @return previous language
 	 */
-	String verifyLanguageAndSet(final Language lang)
-	{
+	String verifyLanguageAndSet(final Language lang) {
 		final Properties ctx = getCtx();
 		final String adLanguageOld = Env.getContext(ctx, Env.CTXNAME_AD_Language);
 
