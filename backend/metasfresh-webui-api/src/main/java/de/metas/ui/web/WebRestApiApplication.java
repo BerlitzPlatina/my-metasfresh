@@ -195,6 +195,7 @@ public class WebRestApiApplication {
 		// "DEBUG");
 
 		// System.setProperty("spring.devtools.restart.enabled", "false");
-		// System.setProperty("restart.exclude.metas", "de.metas.ui.web.base-.*\\.jar\n");
+		// System.setProperty("restart.exclude.metas",
+		// "de.metas.ui.web.base-.*\\.jar\n");
 	}
 }
