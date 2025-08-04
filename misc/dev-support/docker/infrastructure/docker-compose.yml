@@ -6,13 +6,23 @@ services:
       args:
         DB_DOCKER_IMG: ${DB_DOCKER_IMG}
     image: docker-db
-    command: ["postgres", "-c", "log_statement=all"]
-    container_name: ${BRANCH_NAME}_db
+    command: 
+      - "postgres"
+      - "-c"
+      - "logging_collector=on"        # MUST be on for logs to be written to files
+      - "-c"
+      - "log_destination=stderr,csvlog" # Log to file (csvlog) AND standard output (stderr)
+      - "-c"
+      - "log_directory=log"           # The subdirectory for logs
+      - "-c"
+      - "log_filename=postgresql-%Y-%m-%d.log" # Example filename
+      - "-c"
+      - "log_statement=all"           # Your original setting    container_name: ${BRANCH_NAME}_db
     #restart: always #avoid restart on docker restart, because we use 1 instance per customer now
     volumes:
       # - metasfresh_postgres:/var/lib/postgresql/data
       - "${VOLUME_PATH}/metasfresh_postgres:/var/lib/postgresql/data"
-      - "${VOLUME_PATH}/metasfresh_postgres/log:/var/lib/postgresql/data/log"
+      - "${VOLUME_PATH}/postgres/logs:/var/lib/postgresql/data/log"
     environment:
       - METASFRESH_USERNAME=metasfresh
       - METASFRESH_PASSWORD=metasfresh
