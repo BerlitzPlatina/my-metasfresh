@@ -4,6 +4,7 @@ mvn clean install -Duser.timezone=Europe/Berlin
 mvn clean install -Duser.timezone=Europe/Berlin -DskipTests
 mvn clean install --offline -Dmaven.gitcommitid.skip=true -DskipTests
 mvn clean install -Dmaven.gitcommitid.skip=true -DskipTests
+mvn clean install -Dlicense.skip=true -Duser.timezone=Europe/Berlin -DskipTests
 
 thế đéo nào dữ lieu install database lại ở trong meta-dist-dist, local.properties lại đặt trong file home
 cách làm đúng cho import database:
@@ -94,15 +95,32 @@ mvn install:install-file \
   -Dpackaging=jar
 
 mvn install:install-file \
-  -Dfile=de-metas-camel-externalsystems-dist-5.175-modus-operandi-uat-26.25103.jar \
+  -Dfile=de-metas-camel-externalsystems-dist-5.175-soft-panda-hotfix.25236.jar \                                            
   -DgroupId=de.metas.camel.externalsystems \
   -DartifactId=de-metas-camel-externalsystems-dist \
-  -Dversion=5.175-modus-operandi-uat-26.25103 \
+  -Dversion=5.175-soft-panda-hotfix.2523 \
+  -Dpackaging=jar
+
+
+mvn install:install-file \
+  -Dfile=extensionsupport-5.175-soft-panda-hotfix.25236.jar \
+  -DgroupId=de.metas \
+  -DartifactId=extensionsupport \
+  -Dversion=5.175-soft-panda-hotfix.25236 \
   -Dpackaging=jar
 
 mvn install:install-file \
-  -Dfile=extensionsupport-5.175-modus-operandi-uat-26.25103.jar \
-  -DgroupId=de.metas \
-  -DartifactId=extensionsupport \
-  -Dversion=5.175-modus-operandi-uat-26.25103 \
+  -Dfile=jp.osdn.ocrb-0.2.1.jar\
+  -DgroupId=jp.osdn.ocrb \
+  -DartifactId=jp.osdn.ocrb \
+  -Dversion=0.2.1 \
   -Dpackaging=jar
+
+mvn install:install-file \
+  -Dfile=itext-2.1.7.js6.jar\
+  -DgroupId=com.lowagie \
+  -DartifactId=itext \
+  -Dversion=2.1.7.js6 \
+  -Dpackaging=jar
+
+
