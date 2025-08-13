@@ -232,8 +232,11 @@ public class WindowRestController {
 					defaultValue = PARAM_Advanced_DefaultValue) final boolean advanced) {
 		userSession.assertLoggedIn();
 
+		// initialize object WindowId
 		final WindowId windowId = WindowId.fromJson(windowIdStr);
+		// initialize object DocumentPath
 		final DocumentPath documentPath = DocumentPath.rootDocumentPath(windowId, documentIdStr);
+		// initialize object JSONDocumentOptions with properties
 		final JSONDocumentOptions jsonOpts = newJSONDocumentOptions()
 				.showOnlyFieldsListStr(fieldsListStr).showAdvancedFields(advanced).build();
 		return getData(documentPath, DocumentQueryOrderByList.EMPTY, jsonOpts).toList();

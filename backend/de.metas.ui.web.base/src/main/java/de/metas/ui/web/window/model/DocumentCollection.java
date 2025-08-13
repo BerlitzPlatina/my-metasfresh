@@ -201,6 +201,8 @@ public class DocumentCollection {
 
 	public <R> R forRootDocumentReadonly(@NonNull final DocumentPath documentPath,
 			final Function<Document, R> rootDocumentProcessor) {
+		// documentPath.getRootDocumentPath() return initialize object DocumentPath
+		// DocumentKey.ofRootDocumentPath initialize object DocumentKey
 		final DocumentKey rootDocumentKey =
 				DocumentKey.ofRootDocumentPath(documentPath.getRootDocumentPath());
 
@@ -261,10 +263,12 @@ public class DocumentCollection {
 			lockHolder = newRootDocument;
 			rootDocumentKey = DocumentKey.ofRootDocumentPath(newRootDocument.getDocumentPath());
 			isNewRootDocument = true;
+			logger.info("Logging ====== lockHolder1: {}", lockHolder);
 		} else {
 			rootDocumentKey = DocumentKey.ofRootDocumentPath(rootDocumentPathOrNew);
 			lockHolder = getOrLoadDocument(rootDocumentKey);
 			isNewRootDocument = false;
+			logger.info("Logging ====== lockHolder2: {}", lockHolder);
 		}
 
 		try (@SuppressWarnings("unused")
