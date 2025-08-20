@@ -294,6 +294,7 @@ public class DocumentCollection {
 				rootDocuments.invalidate(rootDocumentKey);
 				changesCollector.collectDeleted(rootDocument.getDocumentPath());
 			} else {
+				// NOTE: Cache here?
 				commitRootDocument(rootDocument);
 			}
 
@@ -409,6 +410,7 @@ public class DocumentCollection {
 		//
 		// Add the saved and changed document back to index
 		final DocumentKey rootDocumentKey = DocumentKey.of(rootDocument);
+		// put cached document back to the cache
 		rootDocuments.put(rootDocumentKey,
 				rootDocument.copy(CopyMode.CheckInReadonly, NullDocumentChangesCollector.instance));
 		addToTableName2WindowIdsCache(rootDocument.getEntityDescriptor());
