@@ -57,6 +57,8 @@ public class DefaultDocumentDescriptorFactory implements DocumentDescriptorFacto
 	{
 		try
 		{
+			// documentDescriptorsByWindowId is cache
+			// this::loadDocumentDescriptor lambda expression
 			return documentDescriptorsByWindowId.getOrLoad(windowId, this::loadDocumentDescriptor);
 		}
 		catch (final Exception e)

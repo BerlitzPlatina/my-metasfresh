@@ -16,6 +16,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Logger;
 
 /*
  * #%L metasfresh-webui-api %% Copyright (C) 2016 metas GmbH %% This program is free software: you
@@ -67,7 +68,10 @@ public final class DocumentPath {
 			throw new IllegalArgumentException(
 					"new or null documentId is not accepted: " + documentId);
 		}
+		Logger.getLogger(DocumentPath.class.getName())
+				.info("windowId.toDocumentId(): " + windowId.toDocumentId().toString());
 		return new DocumentPath(DocumentType.Window, windowId.toDocumentId(), documentId);
+
 	}
 
 	public static DocumentPath rootDocumentPath(@NonNull final WindowId windowId,

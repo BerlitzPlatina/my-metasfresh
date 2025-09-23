@@ -22,13 +22,14 @@ services:
     volumes:
       # - metasfresh_postgres:/var/lib/postgresql/data
       - "${VOLUME_PATH}/metasfresh_postgres:/var/lib/postgresql/data"
-      - "${VOLUME_PATH}/metasfresh_postgres/logs:/var/lib/postgresql/data/log"
+      - "${VOLUME_PATH}/postgres/logs:/var/lib/postgresql/data/log"
     environment:
       - METASFRESH_USERNAME=metasfresh
       - METASFRESH_PASSWORD=metasfresh
       - METASFRESH_DBNAME=metasfresh
       - DB_SYSPASS=System
       - POSTGRES_PASSWORD=ip2LmNzXX8p8iXg9lZTWEJ9524kQDbXFudB7LR03T-xK9fLweX3TLMkA2AYcEiaS
+      - PGDATA=/var/lib/postgresql/data/folder1/
     ports:
       - "${DB_PORT}:5432"
 

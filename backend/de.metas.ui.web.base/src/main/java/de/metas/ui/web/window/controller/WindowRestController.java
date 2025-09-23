@@ -108,7 +108,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -131,6 +131,10 @@ public class WindowRestController {
 
 	@NonNull
 	private static final Logger logger = LogManager.getLogger(DebugRestController.class);
+
+	@NonNull
+	private static final ObjectMapper mapper = new ObjectMapper();
+
 	@NonNull
 	private final IADTableDAO adTableDAO = Services.get(IADTableDAO.class);
 	@NonNull
@@ -236,7 +240,7 @@ public class WindowRestController {
 		final WindowId windowId = WindowId.fromJson(windowIdStr);
 		// initialize object DocumentPath
 		final DocumentPath documentPath = DocumentPath.rootDocumentPath(windowId, documentIdStr);
-		// initialize object JSONDocumentOptions with properties
+		// initialize object JSONDocumentOptions with properties (executed query)
 		final JSONDocumentOptions jsonOpts = newJSONDocumentOptions()
 				.showOnlyFieldsListStr(fieldsListStr).showAdvancedFields(advanced).build();
 		return getData(documentPath, DocumentQueryOrderByList.EMPTY, jsonOpts).toList();
@@ -315,16 +319,20 @@ public class WindowRestController {
 		return documentCollection.forRootDocumentReadonly(documentPath, rootDocument -> {
 			final OrderedDocumentsList documents;
 			if (documentPath.isRootDocument()) {
+				logger.info("getData: documentPath.isRootDocument()");
 				documents = OrderedDocumentsList.of(rootDocument);
 			} else if (documentPath.isAnyIncludedDocument()) {
+				logger.info("getData: documentPath.isAnyIncludedDocument()");
 				documents = rootDocument.getIncludedDocuments(documentPath.getDetailId(), orderBys);
 			} else if (documentPath.isSingleIncludedDocument()) {
+				logger.info("getData: documentPath.isSingleIncludedDocument()");
 				// IMPORTANT: in case the document was not found, don't fail but return empty.
 				final Document document =
 						rootDocument.getIncludedDocument(documentPath.getDetailId(),
 								documentPath.getSingleRowId()).orElse(null);
 				documents = OrderedDocumentsList.ofNullable(document);
 			} else {
+				logger.info("getData: else - unexpected");
 				documents = rootDocument.getIncludedDocuments(documentPath.getDetailId(),
 						documentPath.getRowIds());
 			}

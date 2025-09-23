@@ -186,6 +186,8 @@ public class DocumentCollection {
 
 	private Document getOrLoadDocument(@NonNull final DocumentKey documentKey) {
 		try {
+			// rootDocuments is cache guava
+			// if not found in cache, load it from DB via retrieveRootDocumentFromRepository
 			return rootDocuments.get(documentKey, () -> {
 
 				final Document rootDocument = retrieveRootDocumentFromRepository(documentKey)
@@ -203,6 +205,7 @@ public class DocumentCollection {
 			final Function<Document, R> rootDocumentProcessor) {
 		// documentPath.getRootDocumentPath() return initialize object DocumentPath
 		// DocumentKey.ofRootDocumentPath initialize object DocumentKey
+		logger.info("Get table test1");
 		final DocumentKey rootDocumentKey =
 				DocumentKey.ofRootDocumentPath(documentPath.getRootDocumentPath());
 
